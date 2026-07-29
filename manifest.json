@@ -6,7 +6,7 @@
       "id": "deseneledublate",
       "name": "DeseneDublate",
       "description": "Romanian Dubbed Cartoons & Anime",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": "A2R14N",
       "supportedTypes": [
         "movie",
@@ -191,6 +191,27 @@
         "m3u8"
       ],
       "logo": "https://icons.duckduckgo.com/ip3/luminsangelsseriale.com.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "desenflix",
+      "name": "DesenFlix",
+      "description": "Desene animate și seriale dublate în Limba Română",
+      "version": "1.0.0",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/desenflix.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://icons.duckduckgo.com/ip3/desenflix.online.ico",
       "contentLanguage": [
         "ro"
       ]
