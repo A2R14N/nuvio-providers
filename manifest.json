@@ -1,0 +1,199 @@
+{
+  "name": "A2R14N's Repo",
+  "version": "1.0.0",
+  "scrapers": [
+    {
+      "id": "deseneledublate",
+      "name": "DeseneDublate",
+      "description": "Romanian Dubbed Cartoons & Anime",
+      "version": "1.0.1",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/deseneledublate.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/deseneledublate.com.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "dozaanimata",
+      "name": "DozaAnimata",
+      "description": "Romanian Anime & Cartoons",
+      "version": "1.0.1",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/dozaanimata.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/dozaanimata.net.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "sitefilme",
+      "name": "SiteFilme",
+      "description": "Movies, Series & Romanian Native Films (Direct HLS)",
+      "version": "1.0.3",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/sitefilme.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://icons.duckduckgo.com/ip3/sitefilme.com.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "desenefaine",
+      "name": "Desenefaine",
+      "description": "Romanian Anime, Cartoons & Animated Movies",
+      "version": "1.0.2",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/desenefaine.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/desenefaine.com.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "vezihd",
+      "name": "VeziHD",
+      "description": "Romanian Movies & TV Series Multi-Mirror Scraper",
+      "version": "1.0.2",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/vezihd.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/vezihd.ro.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "fsonline",
+      "name": "FSOnline",
+      "description": "Romanian Movies & TV Series Scraper",
+      "version": "1.0.0",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/fsonline.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/www3.fsonline.app.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "xfilme",
+      "name": "XFilme",
+      "description": "Romanian Subtitled Movies & TV Series",
+      "version": "1.0.0",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/xfilme.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/xfilme.ro.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "clicksud",
+      "name": "Clicksud",
+      "description": "Romanian Dubbed & Native Movies and TV Series",
+      "version": "1.0.2",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/clicksud.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/clicksud.com.in.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "gofilme",
+      "name": "GoFilme",
+      "description": "Filme Online Subtitrate și Dublate în Limba Română",
+      "version": "1.0.6",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie"
+      ],
+      "filename": "providers/gofilme.js",
+      "enabled": true,
+      "logo": "https://icons.duckduckgo.com/ip3/gofilme.sx.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "voxfilmeonline",
+      "name": "VoxFilmeOnline",
+      "description": "Filme Online HD Subtitrate în Limba Română",
+      "version": "1.0.2",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie"
+      ],
+      "filename": "providers/voxfilmeonline.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://icons.duckduckgo.com/ip3/voxfilmeonline.biz.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    },
+    {
+      "id": "luminsangels",
+      "name": "Lumins Angels",
+      "description": "Seriale internaționale subtitrate în Limba Română",
+      "version": "1.0.0",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "tv"
+      ],
+      "filename": "providers/luminsangels.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://icons.duckduckgo.com/ip3/luminsangelsseriale.com.ico",
+      "contentLanguage": [
+        "ro"
+      ]
+    }
+  ]
+}
