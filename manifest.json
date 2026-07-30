@@ -286,7 +286,7 @@
       "id": "uhdmovies",
       "name": "UHDMovies",
       "description": "4K and 1080p Hindi-English dual-audio movies",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": "A2R14N",
       "supportedTypes": [
         "movie"

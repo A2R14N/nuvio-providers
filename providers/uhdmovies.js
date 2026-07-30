@@ -1,6 +1,6 @@
 /**
  * uhdmovies - Built from src/uhdmovies/
- * Generated: 2026-07-30T19:29:02.622Z
+ * Generated: 2026-07-30T19:45:27.471Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -161,19 +161,48 @@ function resolveDriveSeed(url) {
       pageUrl = absoluteUrl(redirectMatch[1], pageUrl);
     }
     const fileHtml = yield fetchText(pageUrl, { headers: HEADERS });
-    const resumeLink = anchors(fileHtml).find(
+    const fileLinks = anchors(fileHtml);
+    const resumeLink = fileLinks.find(
       (link) => /resume cloud/i.test(link.text)
     );
-    const resumeUrl = resumeLink ? absoluteUrl(resumeLink.href, pageUrl) : "";
-    if (!resumeUrl)
-      return "";
-    const resumeHtml = yield fetchText(resumeUrl, {
-      headers: Object.assign({}, HEADERS, { Referer: pageUrl })
-    });
-    const worker = anchors(resumeHtml).find(
-      (link) => /workers\.dev/i.test(link.href) && /\bbtn-success\b/i.test(attribute(link.tag, "class"))
+    if (resumeLink) {
+      const resumeUrl = absoluteUrl(resumeLink.href, pageUrl);
+      const resumeHtml = yield fetchText(resumeUrl, {
+        headers: Object.assign({}, HEADERS, { Referer: pageUrl })
+      });
+      const resumeLinks = anchors(resumeHtml);
+      const direct = resumeLinks.find(
+        (link) => /^https?:\/\//i.test(link.href) && (/workers\.dev/i.test(link.href) || /\bbtn-success\b/i.test(attribute(link.tag, "class")))
+      );
+      if (direct)
+        return direct.href;
+    }
+    const cloudLink = fileLinks.find(
+      (link) => /cloud download/i.test(link.text) && /^https?:\/\//i.test(link.href)
     );
-    return worker ? worker.href : "";
+    if (cloudLink)
+      return cloudLink.href;
+    const instantLink = fileLinks.find(
+      (link) => /instant download/i.test(link.text)
+    );
+    if (instantLink) {
+      const response = yield fetch(absoluteUrl(instantLink.href, pageUrl), {
+        headers: Object.assign({}, HEADERS, { Referer: pageUrl }),
+        redirect: "follow"
+      });
+      const finalUrl = response.url || "";
+      const encoded = finalUrl.match(/[?&]url=([^&]+)/i);
+      if (encoded) {
+        try {
+          return decodeURIComponent(encoded[1]);
+        } catch (e) {
+          return encoded[1];
+        }
+      }
+      if (/\.(?:mkv|mp4)(?:[?#]|$)/i.test(finalUrl))
+        return finalUrl;
+    }
+    return "";
   });
 }
 function fetchMetadata(tmdbId) {
@@ -273,7 +302,7 @@ function resolveRelease(release) {
         return null;
       }
       const streamUrl = yield resolveDriveSeed(driveSeedUrl);
-      if (!streamUrl) {
+      if (!streamUrl || !/^https?:\/\//i.test(streamUrl)) {
         console.log("[UHDMovies] DriveSeed did not return a worker link");
         return null;
       }
