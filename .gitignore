@@ -1,0 +1,8 @@
+# Public release allowlist: ignore everything unless explicitly permitted.
+/*
+
+!/.gitignore
+!/README.md
+!/manifest.json
+!/providers/
+!/providers/**

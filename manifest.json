@@ -14,7 +14,7 @@
       ],
       "filename": "providers/deseneledublate.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/deseneledublate.com.ico",
+      "logo": "https://i.imgur.com/dczAZv0.png",
       "contentLanguage": [
         "ro"
       ]
@@ -31,7 +31,7 @@
       ],
       "filename": "providers/dozaanimata.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/dozaanimata.net.ico",
+      "logo": "https://i.imgur.com/Qz8lYMS.png",
       "contentLanguage": [
         "ro"
       ]
@@ -51,7 +51,7 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://icons.duckduckgo.com/ip3/sitefilme.com.ico",
+      "logo": "https://i.imgur.com/aCDM5bW.png",
       "contentLanguage": [
         "ro"
       ]
@@ -68,7 +68,7 @@
       ],
       "filename": "providers/desenefaine.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/desenefaine.com.ico",
+      "logo": "https://i.imgur.com/nQv1tDf.png",
       "contentLanguage": [
         "ro"
       ]
@@ -85,7 +85,7 @@
       ],
       "filename": "providers/vezihd.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/vezihd.ro.ico",
+      "logo": "https://i.imgur.com/jIzg7lW.png",
       "contentLanguage": [
         "ro"
       ]
@@ -102,7 +102,7 @@
       ],
       "filename": "providers/fsonline.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/www3.fsonline.app.ico",
+      "logo": "https://i.imgur.com/UapFiDY.png",
       "contentLanguage": [
         "ro"
       ]
@@ -119,7 +119,7 @@
       ],
       "filename": "providers/xfilme.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/xfilme.ro.ico",
+      "logo": "https://i.imgur.com/Mqn7kGF.png",
       "contentLanguage": [
         "ro"
       ]
@@ -136,7 +136,7 @@
       ],
       "filename": "providers/clicksud.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/clicksud.com.in.ico",
+      "logo": "https://i.imgur.com/eeHE1eP.png",
       "contentLanguage": [
         "ro"
       ]
@@ -152,7 +152,7 @@
       ],
       "filename": "providers/gofilme.js",
       "enabled": true,
-      "logo": "https://icons.duckduckgo.com/ip3/gofilme.sx.ico",
+      "logo": "https://i.imgur.com/Uh14CSU.png",
       "contentLanguage": [
         "ro"
       ]
@@ -171,7 +171,7 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://icons.duckduckgo.com/ip3/voxfilmeonline.biz.ico",
+      "logo": "https://i.imgur.com/zaqjF90.png",
       "contentLanguage": [
         "ro"
       ]
@@ -190,7 +190,7 @@
       "formats": [
         "m3u8"
       ],
-      "logo": "https://icons.duckduckgo.com/ip3/luminsangelsseriale.com.ico",
+      "logo": "https://i.imgur.com/tIEBjzN.jpeg",
       "contentLanguage": [
         "ro"
       ]
@@ -211,9 +211,75 @@
         "m3u8",
         "mp4"
       ],
-      "logo": "https://icons.duckduckgo.com/ip3/desenflix.online.ico",
+      "logo": "https://i.imgur.com/2p5P1jd.png",
       "contentLanguage": [
         "ro"
+      ]
+    },
+    {
+      "id": "bingr",
+      "name": "Bingr",
+      "description": "Movies and TV series from Bingr's multi-source streaming API",
+      "version": "1.0.1",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/bingr.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mpd"
+      ],
+      "logo": "https://bingr.one/brand/logo.png",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "vidking",
+      "name": "VidKing",
+      "description": "Movies and TV series from VidKing's multi-source streaming API",
+      "version": "1.0.1",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/vidking.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mpd"
+      ],
+      "logo": "https://www.vidking.net/favicon.ico",
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "videasy",
+      "name": "Videasy",
+      "description": "Movies and TV series from Videasy's multi-source streaming API",
+      "version": "1.0.1",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/videasy.js",
+      "enabled": false,
+      "formats": [
+        "m3u8",
+        "mp4",
+        "mpd"
+      ],
+      "logo": "https://www.videasy.to/favicon.ico",
+      "contentLanguage": [
+        "en"
       ]
     }
   ]
