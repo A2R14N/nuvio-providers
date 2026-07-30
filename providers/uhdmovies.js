@@ -1,6 +1,6 @@
 /**
  * uhdmovies - Built from src/uhdmovies/
- * Generated: 2026-07-30T19:45:27.471Z
+ * Generated: 2026-07-30T20:53:16.451Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -172,35 +172,10 @@ function resolveDriveSeed(url) {
       });
       const resumeLinks = anchors(resumeHtml);
       const direct = resumeLinks.find(
-        (link) => /^https?:\/\//i.test(link.href) && (/workers\.dev/i.test(link.href) || /\bbtn-success\b/i.test(attribute(link.tag, "class")))
+        (link) => /^https?:\/\/[^/]*workers\.dev\//i.test(link.href)
       );
       if (direct)
         return direct.href;
-    }
-    const cloudLink = fileLinks.find(
-      (link) => /cloud download/i.test(link.text) && /^https?:\/\//i.test(link.href)
-    );
-    if (cloudLink)
-      return cloudLink.href;
-    const instantLink = fileLinks.find(
-      (link) => /instant download/i.test(link.text)
-    );
-    if (instantLink) {
-      const response = yield fetch(absoluteUrl(instantLink.href, pageUrl), {
-        headers: Object.assign({}, HEADERS, { Referer: pageUrl }),
-        redirect: "follow"
-      });
-      const finalUrl = response.url || "";
-      const encoded = finalUrl.match(/[?&]url=([^&]+)/i);
-      if (encoded) {
-        try {
-          return decodeURIComponent(encoded[1]);
-        } catch (e) {
-          return encoded[1];
-        }
-      }
-      if (/\.(?:mkv|mp4)(?:[?#]|$)/i.test(finalUrl))
-        return finalUrl;
     }
     return "";
   });
@@ -302,7 +277,7 @@ function resolveRelease(release) {
         return null;
       }
       const streamUrl = yield resolveDriveSeed(driveSeedUrl);
-      if (!streamUrl || !/^https?:\/\//i.test(streamUrl)) {
+      if (!streamUrl || !/^https?:\/\/[^/]*workers\.dev\//i.test(streamUrl)) {
         console.log("[UHDMovies] DriveSeed did not return a worker link");
         return null;
       }
