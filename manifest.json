@@ -324,6 +324,28 @@
         "hi",
         "en"
       ]
+    },
+    {
+      "id": "4khdhub",
+      "name": "4KHDHub",
+      "description": "4K movies and TV series with direct download sources",
+      "version": "1.0.0",
+      "author": "A2R14N",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/4khdhub.js",
+      "enabled": true,
+      "formats": [
+        "mkv",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=4khdhub.one&sz=128",
+      "contentLanguage": [
+        "hi",
+        "en"
+      ]
     }
   ]
 }
