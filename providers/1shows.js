@@ -1,6 +1,6 @@
 /**
  * 1shows - Built from src/1shows/
- * Generated: 2026-08-02T07:59:26.688Z
+ * Generated: 2026-08-02T10:01:57.341Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -947,25 +947,8 @@ function resolveFilmyFlyUrls(source) {
 }
 function resolveDirectUrls(source) {
   return __async(this, null, function* () {
-    try {
-      const response = yield fetch(normalizeDirectUrl(source.url), {
-        method: "GET",
-        headers: Object.assign({}, PAGE_HEADERS, { Range: "bytes=0-1" }),
-        redirect: "follow",
-        skipSizeCheck: true
-      });
-      const contentRange = String(response.headers.get("content-range") || "");
-      if (response.status === 206 && /^bytes\s+0-1\//i.test(contentRange)) {
-        return [normalizeDirectUrl(response.url || source.url)];
-      }
-      console.log(
-        `[1Shows] Direct source locked or unavailable: HTTP ${response.status}`
-      );
-      return [];
-    } catch (error) {
-      console.log(`[1Shows] Direct source unavailable: ${error.message}`);
-      return [];
-    }
+    const url = normalizeDirectUrl(source.url);
+    return url && !isKnownUnplayableHost(url) ? [url] : [];
   });
 }
 function resolveSourceUrl(_0) {
@@ -1099,7 +1082,7 @@ function releaseDetailsFromText(value) {
   const identity = (((_a = filename.match(/^(.+?\(\d{4}\))/)) == null ? void 0 : _a[1]) || "").replace(/\.+/g, " ");
   const quality = ((_b = filename.match(/\b(?:2160p|1080p|720p|480p|4K)\b/i)) == null ? void 0 : _b[0]) || "";
   const release = ((_c = filename.match(/\b(?:BluRay|WEB[- .]?DL|WEBRip|BRRip|HDRip|DVDRip)\b/i)) == null ? void 0 : _c[0]) || (/(?:^|\s)HD(?:\s|$)/i.test(filename) ? "HD" : "");
-  const codec = ((_d = filename.match(/\b(?:HEVC|x265|x264|AV1)\b/i)) == null ? void 0 : _d[0]) || "";
+  const codec = ((_d = filename.match(/\b(?:HEVC|AVC|H[.]?265|H[.]?264|x265|x264|AV1)\b/i)) == null ? void 0 : _d[0]) || "";
   const extras = [];
   if (/\b(?:HDR10\+?|HDR)\b/i.test(filename))
     extras.push("HDR");
@@ -1200,6 +1183,7 @@ function resolveSource(source) {
 function isStreamAlive(stream) {
   return __async(this, null, function* () {
     var _a;
+    const startedAt = Date.now();
     try {
       const response = yield fetch(stream.url, {
         method: "GET",
@@ -1215,7 +1199,8 @@ function isStreamAlive(stream) {
       const contentType = String(
         response.headers && response.headers.get ? response.headers.get("content-type") || "" : ""
       ).toLowerCase();
-      const rangedMedia = response.status === 206 && /^bytes\s+0-1\//i.test(contentRange);
+      const rangeTotal = Number(((_a = contentRange.match(/\/(\d+)$/)) == null ? void 0 : _a[1]) || 0);
+      const rangedMedia = response.status === 206 && /^bytes\s+0-1\//i.test(contentRange) && rangeTotal >= 1024 * 1024;
       const hlsPlaylist = response.ok && (/mpegurl|application\/vnd\.apple\.mpegurl/i.test(contentType) || /\.m3u8(?:$|[?#])/i.test(stream.url));
       if (!rangedMedia && !hlsPlaylist) {
         console.log(
@@ -1223,18 +1208,38 @@ function isStreamAlive(stream) {
         );
       }
       if (rangedMedia) {
-        const totalBytes = (_a = contentRange.match(/\/(\d+)$/)) == null ? void 0 : _a[1];
-        const detectedSize = formatFileSize(totalBytes);
+        const detectedSize = formatFileSize(rangeTotal);
         if (detectedSize) {
-          stream.size = stream.size || detectedSize;
+          stream.size = detectedSize;
         }
       }
+      if (/video\/mp4/i.test(contentType))
+        stream.type = "video/mp4";
+      else if (/video\/webm/i.test(contentType))
+        stream.type = "video/webm";
+      else if (/matroska/i.test(contentType))
+        stream.type = "video/x-matroska";
+      else if (/mpegurl/i.test(contentType))
+        stream.type = "application/x-mpegURL";
+      stream._probeMs = Date.now() - startedAt;
       return rangedMedia || hlsPlaylist;
     } catch (error) {
       console.log(`[1Shows] Dead source removed: ${error.message}`);
       return false;
     }
   });
+}
+function mediaFingerprint(stream) {
+  if (!/1Shows - KatMovies/i.test(stream.name || ""))
+    return "";
+  try {
+    const filename = decodeURIComponent(
+      new URL(stream.url).pathname.split("/").filter(Boolean).pop() || ""
+    );
+    return /\.(?:mkv|mp4|webm)$/i.test(filename) ? filename.toLowerCase() : "";
+  } catch (e) {
+    return "";
+  }
 }
 function getStreams(tmdbId, mediaType, season, episode, onlyFamily) {
   return __async(this, null, function* () {
@@ -1264,18 +1269,36 @@ function getStreams(tmdbId, mediaType, season, episode, onlyFamily) {
       );
       const resolvedGroups = yield Promise.all(matchingSources.map(resolveSource));
       const resolved = [].concat.apply([], resolvedGroups);
+      const uniqueResolved = resolved.filter(
+        (stream, index) => stream && stream.url && resolved.findIndex(
+          (candidate) => candidate && candidate.url === stream.url
+        ) === index
+      );
       const checked = yield Promise.all(
-        resolved.map(
+        uniqueResolved.map(
           (stream) => __async(this, null, function* () {
             return stream && (yield isStreamAlive(stream)) ? stream : null;
           })
         )
       );
+      const fastestMirrors = {};
+      for (const stream of checked) {
+        if (!stream)
+          continue;
+        const fingerprint = mediaFingerprint(stream);
+        if (fingerprint && (!fastestMirrors[fingerprint] || stream._probeMs < fastestMirrors[fingerprint]._probeMs)) {
+          fastestMirrors[fingerprint] = stream;
+        }
+      }
       const seen = {};
       const streams = checked.filter((stream) => {
         if (!stream || !stream.url || seen[stream.url])
           return false;
+        const fingerprint = mediaFingerprint(stream);
+        if (fingerprint && fastestMirrors[fingerprint] !== stream)
+          return false;
         seen[stream.url] = true;
+        delete stream._probeMs;
         return true;
       });
       console.log(
