@@ -1,6 +1,6 @@
 /**
  * 4khdhub - Built from src/4khdhub/
- * Generated: 2026-07-30T21:34:33.906Z
+ * Generated: 2026-08-02T08:30:50.255Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -139,6 +139,53 @@ function parseSize(value) {
   const match = String(value || "").match(/([\d.]+)\s*(GB|MB|KB)/i);
   return match ? `${match[1]} ${match[2].toUpperCase()}` : "Unknown";
 }
+function parseReleaseDetails(value, fallbackQuality = "Unknown") {
+  var _a, _b, _c, _d, _e, _f;
+  const text = String(value || "").replace(/_+/g, " ");
+  const quality = parseQuality(text) !== "Unknown" ? parseQuality(text) : fallbackQuality;
+  const details = [];
+  const service = (_a = text.match(/\b(?:AMZN|NF|DSNP|MAX|ATVP|HULU)\b/i)) == null ? void 0 : _a[0];
+  if (service)
+    details.push(service.toUpperCase());
+  const release = (_b = text.match(/\b(?:BluRay|WEB[. -]?DL|WEB[. -]?Rip|BRRip|HDRip|DVDRip)\b/i)) == null ? void 0 : _b[0];
+  if (/\bUHD\b/i.test(text) && /BluRay/i.test(release || ""))
+    details.push("UHD BluRay");
+  else if (release)
+    details.push(release.replace(/WEB[. -]?DL/i, "WEB-DL").replace(/WEB[. -]?Rip/i, "WEBRip"));
+  if (/\bREMUX\b/i.test(text))
+    details.push("REMUX");
+  if (/\bREPACK\b/i.test(text))
+    details.push("REPACK");
+  if (/\bHDR10\+?|\bHDR\b/i.test(text))
+    details.push("HDR");
+  if (/\b(?:Dolby[ -]?Vision|DoVi|DV)\b/i.test(text))
+    details.push("DV");
+  if (/\b10[ -]?bit\b/i.test(text))
+    details.push("10-bit");
+  const codec = (_c = text.match(/\b(?:HEVC|AVC|AV1|x265|x264|H[.]?265|H[.]?264)\b/i)) == null ? void 0 : _c[0];
+  if (codec)
+    details.push(codec.toUpperCase().replace(/^H265$/, "H.265").replace(/^H264$/, "H.264"));
+  if (/\bMulti(?:[. -]?Audio)?\b/i.test(text))
+    details.push("Multi Audio");
+  const audioDetails = [];
+  for (const language of ["Hindi", "English", "Romanian", "Tamil", "Telugu", "Malayalam", "Bengali"]) {
+    const section = ((_d = text.match(new RegExp(`\\b${language}\\b([^+\\]]*)`, "i"))) == null ? void 0 : _d[1]) || "";
+    const audio = (_e = section.match(/(?:DDP?\s*\d\.\d|DTS-HD\s*MA\s*\d\.\d|DTS\s*\d\.\d|TrueHD\s*\d\.\d|AAC\s*\d\.\d|Atmos)/i)) == null ? void 0 : _e[0];
+    if (audio)
+      audioDetails.push(`${language} ${audio.replace(/DDP?\s*/i, (match) => match.trim().toUpperCase()).replace(/\s+/g, " ")}`);
+    else if (new RegExp(`\\b${language}\\b`, "i").test(text))
+      audioDetails.push(language);
+  }
+  if (!audioDetails.some((detail) => /(?:DDP?|DTS|TrueHD|AAC|Atmos)/i.test(detail))) {
+    const audio = (_f = text.match(/\b(?:DDP?\s*\d[.]\d|DTS-HD\s*MA\s*\d[.]\d|DTS\s*\d[.]\d|TrueHD(?:[.]?Atmos)?[. ]*\d[.]\d|AAC\s*\d[.]\d|Atmos[. ]*\d[.]\d)\b/i)) == null ? void 0 : _f[0];
+    if (audio)
+      details.push(audio.replace(/DDP?\s*/i, (match) => match.trim().toUpperCase()).replace(/\s+/g, " "));
+  }
+  details.push(...audioDetails);
+  if (/\bE-?Sub\b/i.test(text))
+    details.push("ESub");
+  return [quality, ...details].filter(Boolean).join(" \xB7 ");
+}
 function isDirectVideo(url) {
   try {
     const host = new URL(url).hostname.toLowerCase();
@@ -270,12 +317,13 @@ function extractHubCloud(url, fallback) {
       const parsedSize = parseSize($("i#size, #size").first().text());
       const size = parsedSize !== "Unknown" ? parsedSize : fallback.size;
       const quality = parseQuality(header) !== "Unknown" ? parseQuality(header) : fallback.quality;
+      const displayQuality = parseReleaseDetails(header, quality);
       const results = [];
       $("a[href]").each((_, element) => {
         const href = $(element).attr("href");
         if (!href || !isDirectVideo(href))
           return;
-        results.push({ url: href, title: header, quality, size });
+        results.push({ url: href, title: header, quality: displayQuality, size });
       });
       return results;
     } catch (e) {
@@ -349,15 +397,8 @@ function getStreams(tmdbId, mediaType, season = null, episode = null) {
         size: stream.size,
         provider: "4khdhub"
       }));
-      const order = {
-        "2160p": 4,
-        "1080p": 3,
-        "720p": 2,
-        "480p": 1,
-        Unknown: 0
-      };
       console.log(`[4KHDHub] Returning ${streams.length} direct stream(s)`);
-      return streams.sort((a, b) => order[b.quality] - order[a.quality]);
+      return streams;
     } catch (error) {
       console.error(`[4KHDHub] Error: ${error.message}`);
       return [];
