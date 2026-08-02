@@ -1,6 +1,6 @@
 /**
  * 1shows - Built from src/1shows/
- * Generated: 2026-08-01T09:35:45.073Z
+ * Generated: 2026-08-02T07:59:26.688Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -749,10 +749,42 @@ function preferredDownloadLink(links) {
   for (const pattern of priorities) {
     const match = usableLinks.find((link) => pattern.test(link.text));
     if (match)
-      return match.href;
+      return match;
   }
   const direct = usableLinks.find((link) => isDirectMedia(link.href));
-  return direct ? direct.href : "";
+  return direct || null;
+}
+function routeName(value, url) {
+  const text = String(value || "");
+  if (/fast cloud|zipdisk/i.test(text))
+    return "Fast Cloud";
+  if (/cloud direct/i.test(text))
+    return "Cloud Direct";
+  if (/pixeldrain/i.test(text))
+    return "Pixeldrain";
+  if (/hubcloud/i.test(text))
+    return "HubCloud";
+  if (/gd\s*index|gdflix/i.test(text))
+    return "GD Index";
+  if (/streamtape/i.test(text))
+    return "Streamtape";
+  if (/instant dl/i.test(text))
+    return "Instant DL";
+  if (/direct download/i.test(text))
+    return "Direct";
+  try {
+    const host = new URL(url || value).hostname.toLowerCase();
+    if (host.includes("pixeldrain"))
+      return "Pixeldrain";
+    if (host.includes("streamtape"))
+      return "Streamtape";
+    if (host.includes("hubcloud"))
+      return "HubCloud";
+    if (host.endsWith(".r2.cloudflarestorage.com"))
+      return "Fast Cloud";
+  } catch (e) {
+  }
+  return "Direct";
 }
 function resolveStreamTape(embedUrl, referer) {
   return __async(this, null, function* () {
@@ -888,17 +920,25 @@ function resolveFilmyFlyUrls(source) {
       const groups = yield Promise.all(
         choices.map((link) => __async(this, null, function* () {
           if (/hubcloud/i.test(link.text)) {
-            const resolved = yield resolveSourceUrl(
+            const resolved2 = yield resolveSourceUrl(
               { url: link.href, label: source.label },
               0,
-              page.url
+              page.url,
+              "HubCloud"
             );
-            return resolved ? [resolved] : [];
+            return resolved2 ? [resolved2] : [];
           }
-          return [normalizeDirectUrl(link.href)];
+          return [{
+            url: normalizeDirectUrl(link.href),
+            route: routeName(link.text, link.href)
+          }];
         }))
       );
-      return [].concat.apply([], groups);
+      const resolved = [].concat.apply([], groups);
+      const sharedRelease = resolved.map((item) => releaseDetailsFromUrl(item.url)).find(Boolean);
+      return resolved.map((item) => Object.assign({}, item, {
+        release: releaseDetailsFromUrl(item.url) || sharedRelease || ""
+      }));
     } catch (error) {
       console.log(`[1Shows] ${source.label || "FilmyFly"} unavailable: ${error.message}`);
       return [];
@@ -929,28 +969,33 @@ function resolveDirectUrls(source) {
   });
 }
 function resolveSourceUrl(_0) {
-  return __async(this, arguments, function* (source, depth = 0, referer = `${SITE_URL}/`) {
+  return __async(this, arguments, function* (source, depth = 0, referer = `${SITE_URL}/`, route = "") {
     if (depth > 5)
-      return "";
+      return null;
     const sourceUrl = absoluteUrl(source.url, SITE_URL);
     if (!sourceUrl)
-      return "";
+      return null;
     if (isKnownUnplayableHost(sourceUrl)) {
       console.log(
         `[1Shows] ${source.label || "Download"} skipped: unsupported playback host`
       );
-      return "";
+      return null;
     }
-    if (isDirectMedia(sourceUrl))
-      return normalizeDirectUrl(sourceUrl);
+    if (isDirectMedia(sourceUrl)) {
+      return {
+        url: normalizeDirectUrl(sourceUrl),
+        route: route || routeName("", sourceUrl)
+      };
+    }
     if (/^https?:\/\/links\.kmhd\.eu\/play(?:\?|$)/i.test(sourceUrl)) {
       try {
-        return yield resolveKmhdPlayer(sourceUrl);
+        const url = yield resolveKmhdPlayer(sourceUrl);
+        return url ? { url, route: route || "Streamtape" } : null;
       } catch (error) {
         console.log(
           `[1Shows] KatMovies player unavailable: ${error.message}`
         );
-        return "";
+        return null;
       }
     }
     try {
@@ -970,17 +1015,20 @@ function resolveSourceUrl(_0) {
           return false;
         }
       }) : null;
-      const nextUrl = fslLink ? fslLink.href : scriptedRedirect ? absoluteUrl(scriptedRedirect[1], page.url) : preferredDownloadLink(pageLinks);
+      const preferred = preferredDownloadLink(pageLinks);
+      const nextLink = fslLink ? fslLink : scriptedRedirect ? { href: absoluteUrl(scriptedRedirect[1], page.url), text: "" } : preferred;
+      const nextUrl = nextLink && nextLink.href;
       if (!nextUrl || nextUrl === sourceUrl)
-        return "";
+        return null;
       return resolveSourceUrl(
         { url: nextUrl, label: source.label },
         depth + 1,
-        page.url
+        page.url,
+        route || routeName(nextLink.text, nextUrl)
       );
     } catch (error) {
       console.log(`[1Shows] ${source.label || sourceUrl} unavailable: ${error.message}`);
-      return "";
+      return null;
     }
   });
 }
@@ -1014,14 +1062,84 @@ function sourceFamily(label, url) {
   return "other";
 }
 function qualityFromLabel(label) {
-  if (/\b(?:2160p|4k)\b/i.test(label))
+  const normalized = String(label || "").replace(/р/gi, "p");
+  if (/\b(?:2160p|4k)\b/i.test(normalized))
     return "2160p";
-  const match = String(label || "").match(/\b(1080|720|480)p\b/i);
+  const match = normalized.match(/\b(1080|720|480)p\b/i);
   return match ? `${match[1]}p` : "Unknown";
 }
 function sizeFromLabel(label) {
   const match = String(label || "").match(/([\d.]+)\s*(GB|MB|KB)/i);
   return match ? `${match[1]} ${match[2].toUpperCase()}` : "";
+}
+function filenameFromUrl(url) {
+  var _a;
+  try {
+    const parsed = new URL(url);
+    const disposition = parsed.searchParams.get("response-content-disposition") || "";
+    const dispositionName = (_a = disposition.match(/filename\*?=(?:UTF-8''|["']?)([^"';]+(?:\.[a-z0-9]{2,5}))/i)) == null ? void 0 : _a[1];
+    const pathName = parsed.pathname.split("/").filter(Boolean).pop() || "";
+    const value = dispositionName || pathName;
+    if (!/\.(?:mkv|mp4|avi|mov|webm)$/i.test(value))
+      return "";
+    return decodeURIComponent(value.replace(/\+/g, " ")).replace(/\.(?:mkv|mp4|avi|mov|webm)$/i, "").replace(/_+/g, " ").replace(/\s+/g, " ").trim();
+  } catch (e) {
+    return "";
+  }
+}
+function releaseDetailsFromUrl(url) {
+  const filename = filenameFromUrl(url);
+  return releaseDetailsFromText(filename);
+}
+function releaseDetailsFromText(value) {
+  var _a, _b, _c, _d, _e;
+  const filename = String(value || "").replace(/р/gi, "p");
+  if (!filename)
+    return "";
+  const identity = (((_a = filename.match(/^(.+?\(\d{4}\))/)) == null ? void 0 : _a[1]) || "").replace(/\.+/g, " ");
+  const quality = ((_b = filename.match(/\b(?:2160p|1080p|720p|480p|4K)\b/i)) == null ? void 0 : _b[0]) || "";
+  const release = ((_c = filename.match(/\b(?:BluRay|WEB[- .]?DL|WEBRip|BRRip|HDRip|DVDRip)\b/i)) == null ? void 0 : _c[0]) || (/(?:^|\s)HD(?:\s|$)/i.test(filename) ? "HD" : "");
+  const codec = ((_d = filename.match(/\b(?:HEVC|x265|x264|AV1)\b/i)) == null ? void 0 : _d[0]) || "";
+  const extras = [];
+  if (/\b(?:HDR10\+?|HDR)\b/i.test(filename))
+    extras.push("HDR");
+  if (/\b(?:Dolby[ .]?Vision|DV)\b/i.test(filename))
+    extras.push("DV");
+  if (/\b10[ .-]?bit\b/i.test(filename))
+    extras.push("10-bit");
+  if (/\bDual Audio\b/i.test(filename))
+    extras.push("Dual Audio");
+  const audio = (_e = filename.match(/\b(?:DDP?\s?\d\.\d|AAC\s?\d\.\d|DTS(?:-HD)?|TrueHD|Atmos)\b/i)) == null ? void 0 : _e[0];
+  if (audio)
+    extras.push(audio.replace(/\s+/g, "").toUpperCase());
+  const languages = ["Hindi", "English", "Romanian", "Tamil", "Telugu", "Malayalam", "Bengali"].filter((language) => new RegExp(`\\b${language}\\b`, "i").test(filename));
+  if (languages.length)
+    extras.push(languages.join(" + "));
+  if (/\bE-?Sub\b/i.test(filename))
+    extras.push("ESub");
+  const groups = [
+    identity,
+    [quality, release.replace(/[ .]/g, "-").replace(/-+/g, "-")].filter(Boolean).join(" "),
+    [codec.toUpperCase(), ...extras].filter(Boolean).join(" \xB7 ")
+  ].filter(Boolean);
+  return groups.join(" \xB7 ");
+}
+function displayQuality(resolved, fallback) {
+  const resolution = qualityFromLabel(`${fallback || ""} ${resolved.url || ""}`);
+  if (!resolved.release)
+    return resolution;
+  const details = resolved.release.split(" \xB7 ").filter((part) => !/^.+\(\d{4}\)$/.test(part)).map((part) => part.replace(new RegExp(`^${resolution}\\s*`, "i"), "")).filter(Boolean).join(" \xB7 ");
+  return details ? `${resolution} \xB7 ${details}` : resolution;
+}
+function formatFileSize(bytes) {
+  const value = Number(bytes);
+  if (!Number.isFinite(value) || value <= 0)
+    return "";
+  if (value >= 1024 ** 3)
+    return `${(value / 1024 ** 3).toFixed(value >= 10 * 1024 ** 3 ? 1 : 2).replace(/\.0+$/, "")} GB`;
+  if (value >= 1024 ** 2)
+    return `${(value / 1024 ** 2).toFixed(value >= 10 * 1024 ** 2 ? 1 : 2).replace(/\.0+$/, "")} MB`;
+  return `${Math.round(value / 1024)} KB`;
 }
 function typeFromUrl(url) {
   if (/\.m3u8(?:$|[?#])/i.test(url))
@@ -1043,18 +1161,22 @@ function playbackReferer(url, fallback) {
   }
   return fallback || `${SITE_URL}/`;
 }
-function streamFromUrl(source, url, index, total) {
+function streamFromUrl(source, resolved, index, total) {
+  const url = resolved.url;
   const name = sourceName(source.label || "");
+  const route = resolved.route || routeName("", url);
+  const release = resolved.release || releaseDetailsFromUrl(url) || releaseDetailsFromText(source.label || "");
+  const displayResolved = Object.assign({}, resolved, { release });
   let qualityText = source.label || "";
   try {
     qualityText += ` ${decodeURIComponent(url)}`;
   } catch (e) {
   }
   return {
-    name: `1Shows - ${name}`,
-    title: `${source.label || name}${total > 1 ? ` - Server ${index + 1}` : ""}`,
+    name: `1Shows - ${name} \xB7 ${route}`,
+    title: `${release || String(source.label || name).replace(/р/gi, "p")}${total > 1 ? ` \xB7 Server ${index + 1}` : ""}`,
     url,
-    quality: qualityFromLabel(qualityText),
+    quality: displayQuality(displayResolved, qualityText),
     size: sizeFromLabel(source.label || ""),
     type: typeFromUrl(url),
     headers: {
@@ -1066,15 +1188,18 @@ function streamFromUrl(source, url, index, total) {
 function resolveSource(source) {
   return __async(this, null, function* () {
     const family = sourceFamily(source.label || "", source.url);
-    const urls = family === "katmovies" ? yield resolveKatMoviesUrls(source) : family === "filmyfly" ? yield resolveFilmyFlyUrls(source) : family === "direct" ? yield resolveDirectUrls(source) : [yield resolveSourceUrl(source)];
-    const uniqueUrls = urls.filter((url, index) => url && urls.indexOf(url) === index);
-    return uniqueUrls.map(
-      (url, index) => streamFromUrl(source, url, index, uniqueUrls.length)
+    const resolvedItems = family === "katmovies" ? (yield resolveKatMoviesUrls(source)).map((url) => ({ url, route: "GD Index" })) : family === "filmyfly" ? yield resolveFilmyFlyUrls(source) : family === "direct" ? (yield resolveDirectUrls(source)).map((url) => ({ url, route: "Direct" })) : [yield resolveSourceUrl(source)];
+    const uniqueItems = resolvedItems.filter(
+      (item, index) => item && item.url && resolvedItems.findIndex((candidate) => candidate && candidate.url === item.url) === index
+    );
+    return uniqueItems.map(
+      (item, index) => streamFromUrl(source, item, index, uniqueItems.length)
     );
   });
 }
 function isStreamAlive(stream) {
   return __async(this, null, function* () {
+    var _a;
     try {
       const response = yield fetch(stream.url, {
         method: "GET",
@@ -1096,6 +1221,13 @@ function isStreamAlive(stream) {
         console.log(
           `[1Shows] Dead source removed: HTTP ${response.status}, ${contentType || "unknown type"}`
         );
+      }
+      if (rangedMedia) {
+        const totalBytes = (_a = contentRange.match(/\/(\d+)$/)) == null ? void 0 : _a[1];
+        const detectedSize = formatFileSize(totalBytes);
+        if (detectedSize) {
+          stream.size = stream.size || detectedSize;
+        }
       }
       return rangedMedia || hlsPlaylist;
     } catch (error) {
