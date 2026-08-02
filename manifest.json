@@ -8,16 +8,11 @@
       "description": "Romanian Dubbed Cartoons & Anime",
       "version": "1.0.2",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/deseneledublate.js",
       "enabled": true,
       "logo": "https://i.imgur.com/dczAZv0.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "dozaanimata",
@@ -25,16 +20,11 @@
       "description": "Romanian Anime & Cartoons",
       "version": "1.0.1",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/dozaanimata.js",
       "enabled": true,
       "logo": "https://i.imgur.com/Qz8lYMS.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "sitefilme",
@@ -42,19 +32,12 @@
       "description": "Movies, Series & Romanian Native Films (Direct HLS)",
       "version": "1.0.3",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/sitefilme.js",
       "enabled": true,
-      "formats": [
-        "m3u8"
-      ],
+      "formats": ["m3u8"],
       "logo": "https://i.imgur.com/aCDM5bW.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "desenefaine",
@@ -62,16 +45,11 @@
       "description": "Romanian Anime, Cartoons & Animated Movies",
       "version": "1.0.2",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/desenefaine.js",
       "enabled": true,
       "logo": "https://i.imgur.com/nQv1tDf.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "vezihd",
@@ -79,16 +57,11 @@
       "description": "Romanian Movies & TV Series Multi-Mirror Scraper",
       "version": "1.0.2",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/vezihd.js",
       "enabled": true,
       "logo": "https://i.imgur.com/jIzg7lW.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "fsonline",
@@ -96,16 +69,11 @@
       "description": "Romanian Movies & TV Series Scraper",
       "version": "1.0.0",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/fsonline.js",
       "enabled": true,
       "logo": "https://i.imgur.com/UapFiDY.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "xfilme",
@@ -113,16 +81,11 @@
       "description": "Romanian Subtitled Movies & TV Series",
       "version": "1.0.0",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/xfilme.js",
       "enabled": true,
       "logo": "https://i.imgur.com/Mqn7kGF.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "clicksud",
@@ -130,16 +93,11 @@
       "description": "Romanian Dubbed & Native Movies and TV Series",
       "version": "1.0.2",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/clicksud.js",
       "enabled": true,
       "logo": "https://i.imgur.com/eeHE1eP.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "gofilme",
@@ -147,15 +105,11 @@
       "description": "Filme Online Subtitrate și Dublate în Limba Română",
       "version": "1.0.6",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie"
-      ],
+      "supportedTypes": ["movie"],
       "filename": "providers/gofilme.js",
       "enabled": true,
       "logo": "https://i.imgur.com/Uh14CSU.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "voxfilmeonline",
@@ -163,18 +117,12 @@
       "description": "Filme Online HD Subtitrate în Limba Română",
       "version": "1.0.2",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie"
-      ],
+      "supportedTypes": ["movie"],
       "filename": "providers/voxfilmeonline.js",
       "enabled": true,
-      "formats": [
-        "m3u8"
-      ],
+      "formats": ["m3u8"],
       "logo": "https://i.imgur.com/zaqjF90.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "luminsangels",
@@ -182,18 +130,12 @@
       "description": "Seriale internaționale subtitrate în Limba Română",
       "version": "1.0.0",
       "author": "A2R14N",
-      "supportedTypes": [
-        "tv"
-      ],
+      "supportedTypes": ["tv"],
       "filename": "providers/luminsangels.js",
       "enabled": true,
-      "formats": [
-        "m3u8"
-      ],
+      "formats": ["m3u8"],
       "logo": "https://i.imgur.com/tIEBjzN.jpeg",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "desenflix",
@@ -201,20 +143,12 @@
       "description": "Desene animate și seriale dublate în Limba Română",
       "version": "1.0.0",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/desenflix.js",
       "enabled": true,
-      "formats": [
-        "m3u8",
-        "mp4"
-      ],
+      "formats": ["m3u8", "mp4"],
       "logo": "https://i.imgur.com/2p5P1jd.png",
-      "contentLanguage": [
-        "ro"
-      ]
+      "contentLanguage": ["ro"]
     },
     {
       "id": "bingr",
@@ -222,21 +156,12 @@
       "description": "Movies and TV series from Bingr's multi-source streaming API",
       "version": "1.0.1",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/bingr.js",
       "enabled": true,
-      "formats": [
-        "m3u8",
-        "mp4",
-        "mpd"
-      ],
+      "formats": ["m3u8", "mp4", "mpd"],
       "logo": "https://bingr.one/brand/logo.png",
-      "contentLanguage": [
-        "en"
-      ]
+      "contentLanguage": ["en"]
     },
     {
       "id": "vidking",
@@ -244,21 +169,12 @@
       "description": "Movies and TV series from VidKing's multi-source streaming API",
       "version": "1.0.1",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/vidking.js",
       "enabled": true,
-      "formats": [
-        "m3u8",
-        "mp4",
-        "mpd"
-      ],
+      "formats": ["m3u8", "mp4", "mpd"],
       "logo": "https://www.vidking.net/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
+      "contentLanguage": ["en"]
     },
     {
       "id": "videasy",
@@ -266,21 +182,12 @@
       "description": "Movies and TV series from Videasy's multi-source streaming API",
       "version": "1.0.1",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/videasy.js",
       "enabled": true,
-      "formats": [
-        "m3u8",
-        "mp4",
-        "mpd"
-      ],
+      "formats": ["m3u8", "mp4", "mpd"],
       "logo": "https://www.videasy.to/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
+      "contentLanguage": ["en"]
     },
     {
       "id": "uhdmovies",
@@ -288,19 +195,12 @@
       "description": "4K and 1080p Hindi-English dual-audio movies",
       "version": "1.0.3",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie"
-      ],
+      "supportedTypes": ["movie"],
       "filename": "providers/uhdmovies.js",
       "enabled": true,
-      "formats": [
-        "mkv"
-      ],
+      "formats": ["mkv"],
       "logo": "https://uhdmovies.autos/wp-content/uploads/2021/03/uhdmovieslogonew.png",
-      "contentLanguage": [
-        "hi",
-        "en"
-      ]
+      "contentLanguage": ["hi", "en"]
     },
     {
       "id": "hdhub4u",
@@ -308,22 +208,12 @@
       "description": "Movies and TV series with direct high-speed download sources",
       "version": "1.0.2",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/hdhub4u.js",
       "enabled": true,
-      "formats": [
-        "mkv",
-        "mp4",
-        "m3u8"
-      ],
+      "formats": ["mkv", "mp4", "m3u8"],
       "logo": "https://www.google.com/s2/favicons?domain=new3.hdhub4u.cl&sz=128",
-      "contentLanguage": [
-        "hi",
-        "en"
-      ]
+      "contentLanguage": ["hi", "en"]
     },
     {
       "id": "4khdhub",
@@ -331,21 +221,12 @@
       "description": "4K movies and TV series with direct download sources",
       "version": "1.0.0",
       "author": "A2R14N",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
+      "supportedTypes": ["movie", "tv"],
       "filename": "providers/4khdhub.js",
       "enabled": true,
-      "formats": [
-        "mkv",
-        "mp4"
-      ],
+      "formats": ["mkv", "mp4"],
       "logo": "https://www.google.com/s2/favicons?domain=4khdhub.one&sz=128",
-      "contentLanguage": [
-        "hi",
-        "en"
-      ]
+      "contentLanguage": ["hi", "en"]
     },
     {
       "id": "1shows",
