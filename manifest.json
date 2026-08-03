@@ -151,6 +151,19 @@
       "contentLanguage": ["ro"]
     },
     {
+      "id": "filmehd",
+      "name": "FilmeHD",
+      "description": "Romanian subtitled movies and TV series from Filesun, VOE and DoodStream",
+      "version": "1.0.0",
+      "author": "A2R14N",
+      "supportedTypes": ["movie", "tv"],
+      "filename": "providers/filmehd.js",
+      "enabled": true,
+      "formats": ["m3u8", "mp4"],
+      "logo": "https://filmehd.to/wp-content/uploads/2020/01/favicon.ico",
+      "contentLanguage": ["ro"]
+    },
+    {
       "id": "bingr",
       "name": "Bingr",
       "description": "Movies and TV series from Bingr's multi-source streaming API",
@@ -240,19 +253,6 @@
       "formats": ["m3u8", "mp4", "mpd", "mkv"],
       "logo": "https://www.1shows.org/favicon/povi-180.png",
       "contentLanguage": ["en"]
-    },
-    {
-      "id": "filmehd",
-      "name": "FilmeHD",
-      "description": "Romanian subtitled movies and TV series from Filesun, VOE and DoodStream",
-      "version": "1.0.0",
-      "author": "A2R14N",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/filmehd.js",
-      "enabled": true,
-      "formats": ["m3u8", "mp4"],
-      "logo": "https://filmehd.to/wp-content/uploads/2020/01/favicon.ico",
-      "contentLanguage": ["ro"]
     }
   ]
 }
