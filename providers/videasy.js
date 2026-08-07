@@ -1,6 +1,6 @@
 /**
  * videasy - Built from src/videasy/
- * Generated: 2026-07-30T18:30:40.938Z
+ * Generated: 2026-08-07T21:48:52.011Z
  */
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
@@ -275,7 +275,9 @@ var require_vidking = __commonJS({
       return subtitles.filter((subtitle) => subtitle && subtitle.url).map((subtitle) => ({
         url: subtitle.url,
         lang: subtitle.lang || subtitle.language || "und",
-        label: subtitle.label || subtitle.display || subtitle.language || "Subtitle"
+        language: subtitle.language || subtitle.lang || "und",
+        label: subtitle.label || subtitle.display || subtitle.language || "Subtitle",
+        name: subtitle.label || subtitle.display || subtitle.language || "Subtitle"
       }));
     }
     function fetchServer(server, request, seed) {
@@ -303,6 +305,7 @@ var require_vidking = __commonJS({
             title: `${server.name} - ${source.quality || source.label || `Source ${index + 1}`}`,
             url: source.url,
             quality: source.quality || source.label || "Auto",
+            language: "en",
             type: source.type || (source.url.includes(".mpd") ? "application/dash+xml" : source.url.includes(".mp4") ? "video/mp4" : "application/x-mpegurl"),
             headers: Object.assign({}, API_HEADERS, source.headers || {}),
             subtitles: normalizeSubtitles(source.subtitles).concat(

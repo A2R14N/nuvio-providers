@@ -1,5 +1,361 @@
 /**
  * voxfilmeonline - Built from src/voxfilmeonline/
- * Generated: 2026-07-29T16:37:52.322Z
+ * Generated: 2026-08-07T21:48:52.020Z
  */
-var _=Object.create;var w=Object.defineProperty;var A=Object.getOwnPropertyDescriptor;var b=Object.getOwnPropertyNames;var O=Object.getPrototypeOf,U=Object.prototype.hasOwnProperty;var V=(t,n,e,r)=>{if(n&&typeof n=="object"||typeof n=="function")for(let s of b(n))!U.call(t,s)&&s!==e&&w(t,s,{get:()=>n[s],enumerable:!(r=A(n,s))||r.enumerable});return t};var C=(t,n,e)=>(e=t!=null?_(O(t)):{},V(n||!t||!t.__esModule?w(e,"default",{value:t,enumerable:!0}):e,t));var f=(t,n,e)=>new Promise((r,s)=>{var o=l=>{try{a(e.next(l))}catch(c){s(c)}},i=l=>{try{a(e.throw(l))}catch(c){s(c)}},a=l=>l.done?r(l.value):Promise.resolve(l.value).then(o,i);a((e=e.apply(t,n)).next())});var m="https://voxfilmeonline.biz",p="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";function u(e){return f(this,arguments,function*(t,n=m+"/"){let r=yield fetch(t,{headers:{"User-Agent":p,Referer:n,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7"}});if(!r.ok)throw new Error(`HTTP ${r.status} on ${t}`);return yield r.text()})}var M="31031042b5deb218a10d70a4c01ea934";function x(t){return f(this,null,function*(){var n,e;try{let r=`https://api.themoviedb.org/3/movie/${encodeURIComponent(t)}?api_key=${M}&append_to_response=translations`,s=JSON.parse(yield u(r,"https://www.themoviedb.org/")),o=(((n=s.translations)==null?void 0:n.translations)||[]).find(i=>i.iso_639_1==="ro");return{title:s.title,originalTitle:s.original_title,romanianTitle:((e=o==null?void 0:o.data)==null?void 0:e.title)||null,year:(s.release_date||"").split("-")[0]}}catch(r){return console.error(`[VoxFilmeOnline] TMDB lookup failed: ${r.message}`),null}})}var S=C(require("cheerio-without-node-native"));function g(t){return String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}function R(t){let n=String(t||"").match(/\b(19|20)\d{2}\b/);return n?n[0]:""}function E(t,n,e,r){let s=g(t),o=g(n),i=0;for(let l of e){let c=g(l);c&&(s.includes(c)&&(i=Math.max(i,100)),o.includes(c)&&(i=Math.max(i,90)))}let a=R(t+" "+n);return r&&a===String(r)?i+=30:r&&a&&a!==String(r)&&(i-=40),i}function v(t){return f(this,null,function*(){let n=Array.from(new Set([t.romanianTitle,t.title,t.originalTitle].filter(Boolean))),e=null;for(let r of n)try{let s=`${m}/?s=${encodeURIComponent(r)}`,o=yield u(s),i=S.default.load(o);if(i("a[href]").each((a,l)=>{let c=i(l).attr("href");if(!c||!c.startsWith(m+"/"))return;let T=i(l).text().replace(/\s+/g," ").trim(),d=E(T,c,n,t.year);d>0&&(!e||d>e.score)&&(e={href:c,score:d})}),e&&e.score>=130)break}catch(s){console.warn(`[VoxFilmeOnline] Search failed for "${r}": ${s.message}`)}return(e==null?void 0:e.href)||null})}function z(t){let n=new Set,r=t.replace(/\\\//g,"/").replace(/\\"/g,'"').replace(/\\'/g,"'").matchAll(/<iframe[^>]+src=["']([^"']+)["']/gi);for(let s of r){let o=s[1].trim();o.startsWith("//")&&(o="https:"+o),/^https?:\/\//i.test(o)&&n.add(o)}return Array.from(n)}function h(t){return String(t||"").replace(/\\\//g,"/").replace(/&amp;/g,"&").trim()}function N(t,n){return f(this,null,function*(){let e=yield u(t,n),r=e.match(/sources\s*:\s*\[\s*\{\s*file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||e.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);return r?h(r[1]):null})}function j(t){return f(this,null,function*(){let n=new URL(t),e=n.pathname.split("/").filter(Boolean),r=e[e.length-1];if(!r)return null;let s=yield fetch(`${n.origin}/api/stream${n.search}`,{method:"POST",headers:{"User-Agent":p,Referer:t,Origin:n.origin,"Content-Type":"application/json"},body:JSON.stringify({filecode:r,device:"web"})});if(!s.ok)throw new Error(`Vidara API returned HTTP ${s.status}`);let o=yield s.json();return o!=null&&o.streaming_url?h(o.streaming_url):null})}function y(t){let n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",e=String(t).replace(/\s+/g,"").replace(/=+$/,""),r="",s=0,o=0;for(let i=0;i<e.length;i++){let a=n.indexOf(e[i]);if(a===-1)return null;s=s<<6|a,o+=6,o>=8&&(o-=8,r+=String.fromCharCode(s>>o&255))}return r}function k(t){try{let n=t.replace(/[a-zA-Z]/g,i=>{let a=i<="Z"?65:97;return String.fromCharCode((i.charCodeAt(0)-a+13)%26+a)}),e=["@$","^^","~@","%?","*~","!!","#&"].reduce((i,a)=>i.split(a).join("_"),n),r=y(e.split("_").join(""));if(!r)return null;let s=Array.from(r,i=>String.fromCharCode(i.charCodeAt(0)-3)).join(""),o=y(s.split("").reverse().join(""));return o?JSON.parse(o):null}catch(n){return null}}function F(t,n){return f(this,null,function*(){let e=t,r=yield u(e,n),s=r.match(/window\.location\.href\s*=\s*["']([^"']+)["']/i);s&&(e=s[1],r=yield u(e,t));let o=r.match(/<script\s+type=["']application\/json["']>\s*(\[[^\]]+\])\s*<\/script>/i);if(o){let a=JSON.parse(o[1]),l=a[0]?k(a[0]):null,c=l&&(l.source||l.direct_access_url||l.fallback);if(c&&/^https?:\/\//i.test(c))return h(c)}let i=r.match(/(?:["']?hls["']?\s*:|file\s*:)\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);return i?h(i[1]):null})}function $(t){return f(this,null,function*(){let n=yield u(t),e=z(n).sort((o,i)=>Number(/vidmoly/i.test(i))-Number(/vidmoly/i.test(o))),r=[],s=new Set;for(let o of e)try{let i=null,a=null;if(/vidmoly/i.test(o)?(i=yield N(o,t),a="Vidmoly"):/vidara/i.test(o)?(i=yield j(o),a="Vidara"):/(?:^|\/\/)(?:www\.)?voe\./i.test(o)&&(i=yield F(o,t),a="VOE"),!i||s.has(i)||!/\.(?:m3u8|mp4)(?:[?#]|$)/i.test(i))continue;s.add(i);let l=new URL(o).origin;r.push({name:"VoxFilmeOnline",title:`${a}[RO]`,url:i,quality:"HD",headers:{"User-Agent":p,Referer:`${l}/`,Origin:l}})}catch(i){console.warn(`[VoxFilmeOnline] ${o} could not be resolved: ${i.message}`)}return r})}function P(t,n){return f(this,null,function*(){if(n!=="movie")return[];try{let e=yield x(t);if(!e)return[];let r=yield v(e);return r?(console.log(`[VoxFilmeOnline] Matched page: ${r}`),yield $(r)):(console.log(`[VoxFilmeOnline] No result for ${e.title} (${e.year})`),[])}catch(e){return console.error(`[VoxFilmeOnline] Error: ${e.message}`),[]}})}module.exports={getStreams:P};
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/voxfilmeonline/http.js
+var BASE_URL = "https://voxfilmeonline.biz";
+var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+function fetchText(_0) {
+  return __async(this, arguments, function* (url, referer = BASE_URL + "/") {
+    const response = yield fetch(url, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        Referer: referer,
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} on ${url}`);
+    }
+    return yield response.text();
+  });
+}
+
+// src/voxfilmeonline/tmdb.js
+var TMDB_API_KEY = "31031042b5deb218a10d70a4c01ea934";
+function getMovieInfo(tmdbId) {
+  return __async(this, null, function* () {
+    var _a, _b;
+    try {
+      const url = `https://api.themoviedb.org/3/movie/${encodeURIComponent(tmdbId)}?api_key=${TMDB_API_KEY}&append_to_response=translations`;
+      const data = JSON.parse(yield fetchText(url, "https://www.themoviedb.org/"));
+      const romanian = (((_a = data.translations) == null ? void 0 : _a.translations) || []).find(
+        (translation) => translation.iso_639_1 === "ro"
+      );
+      return {
+        title: data.title,
+        originalTitle: data.original_title,
+        romanianTitle: ((_b = romanian == null ? void 0 : romanian.data) == null ? void 0 : _b.title) || null,
+        year: (data.release_date || "").split("-")[0]
+      };
+    } catch (error) {
+      console.error(`[VoxFilmeOnline] TMDB lookup failed: ${error.message}`);
+      return null;
+    }
+  });
+}
+
+// src/voxfilmeonline/extractor.js
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+function normalizeText(value) {
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+function extractYear(value) {
+  const match = String(value || "").match(/\b(19|20)\d{2}\b/);
+  return match ? match[0] : "";
+}
+function scoreResult(text, href, titles, year) {
+  const normalized = normalizeText(text);
+  const normalizedHref = normalizeText(href);
+  let score = 0;
+  for (const title of titles) {
+    const target = normalizeText(title);
+    if (!target)
+      continue;
+    if (normalized.includes(target))
+      score = Math.max(score, 100);
+    if (normalizedHref.includes(target))
+      score = Math.max(score, 90);
+  }
+  const resultYear = extractYear(text + " " + href);
+  if (year && resultYear === String(year))
+    score += 30;
+  else if (year && resultYear && resultYear !== String(year))
+    score -= 40;
+  return score;
+}
+function findMoviePage(mediaInfo) {
+  return __async(this, null, function* () {
+    const titles = Array.from(
+      new Set(
+        [
+          mediaInfo.romanianTitle,
+          mediaInfo.title,
+          mediaInfo.originalTitle
+        ].filter(Boolean)
+      )
+    );
+    let bestResult = null;
+    for (const title of titles) {
+      try {
+        const searchUrl = `${BASE_URL}/?s=${encodeURIComponent(title)}`;
+        const html = yield fetchText(searchUrl);
+        const $ = import_cheerio_without_node_native.default.load(html);
+        $("a[href]").each((_, element) => {
+          const href = $(element).attr("href");
+          if (!href || !href.startsWith(BASE_URL + "/"))
+            return;
+          const text = $(element).text().replace(/\s+/g, " ").trim();
+          const score = scoreResult(
+            text,
+            href,
+            titles,
+            mediaInfo.year
+          );
+          if (score > 0 && (!bestResult || score > bestResult.score)) {
+            bestResult = { href, score };
+          }
+        });
+        if (bestResult && bestResult.score >= 130)
+          break;
+      } catch (error) {
+        console.warn(
+          `[VoxFilmeOnline] Search failed for "${title}": ${error.message}`
+        );
+      }
+    }
+    return (bestResult == null ? void 0 : bestResult.href) || null;
+  });
+}
+function extractEmbedUrls(html) {
+  const urls = /* @__PURE__ */ new Set();
+  const normalizedHtml = html.replace(/\\\//g, "/").replace(/\\"/g, '"').replace(/\\'/g, "'");
+  const matches = normalizedHtml.matchAll(
+    /<iframe[^>]+src=["']([^"']+)["']/gi
+  );
+  for (const match of matches) {
+    let url = match[1].trim();
+    if (url.startsWith("//"))
+      url = "https:" + url;
+    if (/^https?:\/\//i.test(url))
+      urls.add(url);
+  }
+  return Array.from(urls);
+}
+function cleanMediaUrl(value) {
+  return String(value || "").replace(/\\\//g, "/").replace(/&amp;/g, "&").trim();
+}
+function resolveVidmoly(embedUrl, pageUrl) {
+  return __async(this, null, function* () {
+    const html = yield fetchText(embedUrl, pageUrl);
+    const match = html.match(
+      /sources\s*:\s*\[\s*\{\s*file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i
+    ) || html.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);
+    return match ? cleanMediaUrl(match[1]) : null;
+  });
+}
+function resolveVidara(embedUrl) {
+  return __async(this, null, function* () {
+    const url = new URL(embedUrl);
+    const parts = url.pathname.split("/").filter(Boolean);
+    const filecode = parts[parts.length - 1];
+    if (!filecode)
+      return null;
+    const response = yield fetch(`${url.origin}/api/stream${url.search}`, {
+      method: "POST",
+      headers: {
+        "User-Agent": USER_AGENT,
+        Referer: embedUrl,
+        Origin: url.origin,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ filecode, device: "web" })
+    });
+    if (!response.ok) {
+      throw new Error(`Vidara API returned HTTP ${response.status}`);
+    }
+    const data = yield response.json();
+    return (data == null ? void 0 : data.streaming_url) ? cleanMediaUrl(data.streaming_url) : null;
+  });
+}
+function decodeBase64(value) {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  const input = String(value).replace(/\s+/g, "").replace(/=+$/, "");
+  let output = "";
+  let buffer = 0;
+  let bits = 0;
+  for (let index = 0; index < input.length; index++) {
+    const digit = alphabet.indexOf(input[index]);
+    if (digit === -1)
+      return null;
+    buffer = buffer << 6 | digit;
+    bits += 6;
+    if (bits >= 8) {
+      bits -= 8;
+      output += String.fromCharCode(buffer >> bits & 255);
+    }
+  }
+  return output;
+}
+function decodeVoeConfig(payload) {
+  try {
+    const rot13 = payload.replace(/[a-zA-Z]/g, (character) => {
+      const start = character <= "Z" ? 65 : 97;
+      return String.fromCharCode(
+        (character.charCodeAt(0) - start + 13) % 26 + start
+      );
+    });
+    const normalized = ["@$", "^^", "~@", "%?", "*~", "!!", "#&"].reduce(
+      (value, marker) => value.split(marker).join("_"),
+      rot13
+    );
+    const firstPass = decodeBase64(normalized.split("_").join(""));
+    if (!firstPass)
+      return null;
+    const shifted = Array.from(
+      firstPass,
+      (character) => String.fromCharCode(character.charCodeAt(0) - 3)
+    ).join("");
+    const json = decodeBase64(shifted.split("").reverse().join(""));
+    return json ? JSON.parse(json) : null;
+  } catch (_) {
+    return null;
+  }
+}
+function resolveVoe(embedUrl, pageUrl) {
+  return __async(this, null, function* () {
+    let currentUrl = embedUrl;
+    let html = yield fetchText(currentUrl, pageUrl);
+    const redirect = html.match(
+      /window\.location\.href\s*=\s*["']([^"']+)["']/i
+    );
+    if (redirect) {
+      currentUrl = redirect[1];
+      html = yield fetchText(currentUrl, embedUrl);
+    }
+    const configMatch = html.match(
+      /<script\s+type=["']application\/json["']>\s*(\[[^\]]+\])\s*<\/script>/i
+    );
+    if (configMatch) {
+      const values = JSON.parse(configMatch[1]);
+      const config = values[0] ? decodeVoeConfig(values[0]) : null;
+      const source = config && (config.source || config.direct_access_url || config.fallback);
+      if (source && /^https?:\/\//i.test(source)) {
+        return cleanMediaUrl(source);
+      }
+    }
+    const direct = html.match(
+      /(?:["']?hls["']?\s*:|file\s*:)\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i
+    );
+    return direct ? cleanMediaUrl(direct[1]) : null;
+  });
+}
+function resolveStreams(pageUrl) {
+  return __async(this, null, function* () {
+    const html = yield fetchText(pageUrl);
+    const embeds = extractEmbedUrls(html).sort((left, right) => {
+      return Number(/vidmoly/i.test(right)) - Number(/vidmoly/i.test(left));
+    });
+    const streams = [];
+    const seen = /* @__PURE__ */ new Set();
+    for (const embedUrl of embeds) {
+      try {
+        let mediaUrl = null;
+        let host = null;
+        if (/vidmoly/i.test(embedUrl)) {
+          mediaUrl = yield resolveVidmoly(embedUrl, pageUrl);
+          host = "Vidmoly";
+        } else if (/vidara/i.test(embedUrl)) {
+          mediaUrl = yield resolveVidara(embedUrl);
+          host = "Vidara";
+        } else if (/(?:^|\/\/)(?:www\.)?voe\./i.test(embedUrl)) {
+          mediaUrl = yield resolveVoe(embedUrl, pageUrl);
+          host = "VOE";
+        }
+        if (!mediaUrl || seen.has(mediaUrl))
+          continue;
+        if (!/\.(?:m3u8|mp4)(?:[?#]|$)/i.test(mediaUrl))
+          continue;
+        seen.add(mediaUrl);
+        const origin = new URL(embedUrl).origin;
+        streams.push({
+          name: "VoxFilmeOnline",
+          title: `${host}[RO]`,
+          url: mediaUrl,
+          quality: "Auto",
+          language: "ro",
+          headers: {
+            "User-Agent": USER_AGENT,
+            Referer: `${origin}/`,
+            Origin: origin
+          }
+        });
+      } catch (error) {
+        console.warn(
+          `[VoxFilmeOnline] ${embedUrl} could not be resolved: ${error.message}`
+        );
+      }
+    }
+    return streams;
+  });
+}
+
+// src/voxfilmeonline/index.js
+function getStreams(tmdbId, mediaType) {
+  return __async(this, null, function* () {
+    if (mediaType !== "movie")
+      return [];
+    try {
+      const mediaInfo = yield getMovieInfo(tmdbId);
+      if (!mediaInfo)
+        return [];
+      const pageUrl = yield findMoviePage(mediaInfo);
+      if (!pageUrl) {
+        console.log(
+          `[VoxFilmeOnline] No result for ${mediaInfo.title} (${mediaInfo.year})`
+        );
+        return [];
+      }
+      console.log(`[VoxFilmeOnline] Matched page: ${pageUrl}`);
+      return yield resolveStreams(pageUrl);
+    } catch (error) {
+      console.error(`[VoxFilmeOnline] Error: ${error.message}`);
+      return [];
+    }
+  });
+}
+module.exports = { getStreams };

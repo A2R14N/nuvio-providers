@@ -1,5 +1,265 @@
 /**
  * luminsangels - Built from src/luminsangels/
- * Generated: 2026-07-29T16:37:52.309Z
+ * Generated: 2026-08-07T21:48:51.997Z
  */
-var E=Object.create;var x=Object.defineProperty;var _=Object.getOwnPropertyDescriptor;var L=Object.getOwnPropertyNames;var T=Object.getPrototypeOf,R=Object.prototype.hasOwnProperty;var U=(r,t,n,o)=>{if(t&&typeof t=="object"||typeof t=="function")for(let e of L(t))!R.call(r,e)&&e!==n&&x(r,e,{get:()=>t[e],enumerable:!(o=_(t,e))||o.enumerable});return r};var b=(r,t,n)=>(n=r!=null?E(T(r)):{},U(t||!r||!r.__esModule?x(n,"default",{value:r,enumerable:!0}):n,r));var f=(r,t,n)=>new Promise((o,e)=>{var s=l=>{try{i(n.next(l))}catch(c){e(c)}},a=l=>{try{i(n.throw(l))}catch(c){e(c)}},i=l=>l.done?o(l.value):Promise.resolve(l.value).then(s,a);i((n=n.apply(r,t)).next())});var m="https://luminsangelsseriale.com",p="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";function u(n){return f(this,arguments,function*(r,t=m+"/"){let o=yield fetch(r,{redirect:"follow",headers:{"User-Agent":p,Referer:t,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8","Accept-Language":"ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7"}});if(!o.ok)throw new Error(`HTTP ${o.status} on ${r}`);return yield o.text()})}var v="31031042b5deb218a10d70a4c01ea934";function w(r){return f(this,null,function*(){var t,n;try{let o=`https://api.themoviedb.org/3/tv/${encodeURIComponent(r)}?api_key=${v}&append_to_response=translations`,e=JSON.parse(yield u(o,"https://www.themoviedb.org/")),s=(((t=e.translations)==null?void 0:t.translations)||[]).find(a=>a.iso_639_1==="ro");return{title:e.name,originalTitle:e.original_name,romanianTitle:((n=s==null?void 0:s.data)==null?void 0:n.name)||null}}catch(o){return console.error(`[LuminsAngels] TMDB lookup failed: ${o.message}`),null}})}var g=b(require("cheerio-without-node-native"));function d(r){return String(r||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}function h(r,t){let n=d(r);return t.some(o=>{let e=d(o);return e&&n.includes(e)})}function $(r,t,n){let o=d(r);return[new RegExp(`(?:sezon|sezonul|season)\\s*0*${t}\\s+(?:episod|episodul|episode)\\s*0*${n}(?:\\D|$)`,"i"),new RegExp(`\\bs\\s*0*${t}\\s*e\\s*0*${n}\\b`,"i")].some(s=>s.test(o))}function A(r){let t=g.default.load(r),n=[];return t("a[href]").each((o,e)=>{let s=t(e).attr("href");if(!s||!s.startsWith(m+"/"))return;let a=[t(e).text(),t(e).attr("title"),t(e).attr("aria-label"),t(e).closest("article, .pt-cv-content-item").text(),s].filter(Boolean).join(" ");n.push({href:s,context:a})}),n}function S(r,t,n){return f(this,null,function*(){let o=Array.from(new Set([r.romanianTitle,r.title,r.originalTitle].filter(Boolean))),e=[];for(let s of o)try{let a=`${m}/?s=${encodeURIComponent(s)}`,i=A(yield u(a)),l=i.find(c=>h(c.context,o)&&$(c.context,t,n));if(l)return l.href;for(let c of i)h(c.context,o)&&!/episod|episode|sezon|season/i.test(c.href)&&!e.includes(c.href)&&e.push(c.href)}catch(a){console.warn(`[LuminsAngels] Search failed for "${s}": ${a.message}`)}for(let s of e.slice(0,5))try{let a=A(yield u(s)).find(i=>h(i.context,o)&&$(i.context,t,n));if(a)return a.href}catch(a){}return null})}function z(r){let t=g.default.load(r),n=new Set;return t("iframe").each((o,e)=>{let s=t(e).attr("src")||t(e).attr("data-src")||t(e).attr("data-lazy-src");s&&(s.startsWith("//")&&(s="https:"+s),/^https?:\/\//i.test(s)&&n.add(s))}),Array.from(n)}function k(r,t){return f(this,null,function*(){let n=yield u(r,t),o=n.match(/sources\s*:\s*\[\s*\{\s*file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||n.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);return o?o[1].replace(/\\\//g,"/").replace(/&amp;/g,"&"):null})}function y(r,t,n){return f(this,null,function*(){let o=z(yield u(r)),e=[],s=new Set;for(let a of o)try{let i=null,l=null;if(/vidmoly/i.test(a)&&(i=yield k(a,r),l="Vidmoly"),!i||s.has(i))continue;s.add(i);let c=new URL(a).origin;e.push({name:"Lumins Angels",title:`${l}[RO] - S${t}E${n}`,url:i,quality:"HD",headers:{"User-Agent":p,Referer:`${c}/`,Origin:c}})}catch(i){console.warn(`[LuminsAngels] Failed to resolve ${a}: ${i.message}`)}return e})}function M(r,t,n,o){return f(this,null,function*(){if(t!=="tv"&&t!=="series"||!n||!o)return[];try{let e=yield w(r);if(!e)return[];let s=yield S(e,n,o);return s?(console.log(`[LuminsAngels] Matched episode: ${s}`),yield y(s,n,o)):(console.log(`[LuminsAngels] No episode found for ${e.title} S${n}E${o}`),[])}catch(e){return console.error(`[LuminsAngels] Error: ${e.message}`),[]}})}module.exports={getStreams:M};
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/luminsangels/http.js
+var BASE_URL = "https://luminsangelsseriale.com";
+var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+function fetchText(_0) {
+  return __async(this, arguments, function* (url, referer = BASE_URL + "/") {
+    const response = yield fetch(url, {
+      redirect: "follow",
+      headers: {
+        "User-Agent": USER_AGENT,
+        Referer: referer,
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} on ${url}`);
+    }
+    return yield response.text();
+  });
+}
+
+// src/luminsangels/tmdb.js
+var TMDB_API_KEY = "31031042b5deb218a10d70a4c01ea934";
+function getSeriesInfo(tmdbId) {
+  return __async(this, null, function* () {
+    var _a, _b;
+    try {
+      const url = `https://api.themoviedb.org/3/tv/${encodeURIComponent(tmdbId)}?api_key=${TMDB_API_KEY}&append_to_response=translations`;
+      const data = JSON.parse(yield fetchText(url, "https://www.themoviedb.org/"));
+      const romanian = (((_a = data.translations) == null ? void 0 : _a.translations) || []).find(
+        (translation) => translation.iso_639_1 === "ro"
+      );
+      return {
+        title: data.name,
+        originalTitle: data.original_name,
+        romanianTitle: ((_b = romanian == null ? void 0 : romanian.data) == null ? void 0 : _b.name) || null
+      };
+    } catch (error) {
+      console.error(`[LuminsAngels] TMDB lookup failed: ${error.message}`);
+      return null;
+    }
+  });
+}
+
+// src/luminsangels/extractor.js
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+function normalize(value) {
+  return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+function titleMatches(value, titles) {
+  const candidate = normalize(value);
+  return titles.some((title) => {
+    const target = normalize(title);
+    return target && candidate.includes(target);
+  });
+}
+function episodeMatches(value, season, episode) {
+  const candidate = normalize(value);
+  const patterns = [
+    new RegExp(
+      `(?:sezon|sezonul|season)\\s*0*${season}\\s+(?:episod|episodul|episode)\\s*0*${episode}(?:\\D|$)`,
+      "i"
+    ),
+    new RegExp(`\\bs\\s*0*${season}\\s*e\\s*0*${episode}\\b`, "i")
+  ];
+  return patterns.some((pattern) => pattern.test(candidate));
+}
+function collectLinks(html) {
+  const $ = import_cheerio_without_node_native.default.load(html);
+  const links = [];
+  $("a[href]").each((_, element) => {
+    const href = $(element).attr("href");
+    if (!href || !href.startsWith(BASE_URL + "/"))
+      return;
+    const context = [
+      $(element).text(),
+      $(element).attr("title"),
+      $(element).attr("aria-label"),
+      $(element).closest("article, .pt-cv-content-item").text(),
+      href
+    ].filter(Boolean).join(" ");
+    links.push({ href, context });
+  });
+  return links;
+}
+function findEpisodePage(mediaInfo, season, episode) {
+  return __async(this, null, function* () {
+    const titles = Array.from(
+      new Set(
+        [
+          mediaInfo.romanianTitle,
+          mediaInfo.title,
+          mediaInfo.originalTitle
+        ].filter(Boolean)
+      )
+    );
+    const seriesPages = [];
+    for (const title of titles) {
+      try {
+        const searchUrl = `${BASE_URL}/?s=${encodeURIComponent(title)}`;
+        const links = collectLinks(yield fetchText(searchUrl));
+        const exact = links.find(
+          (link) => titleMatches(link.context, titles) && episodeMatches(link.context, season, episode)
+        );
+        if (exact)
+          return exact.href;
+        for (const link of links) {
+          if (titleMatches(link.context, titles) && !/episod|episode|sezon|season/i.test(link.href) && !seriesPages.includes(link.href)) {
+            seriesPages.push(link.href);
+          }
+        }
+      } catch (error) {
+        console.warn(
+          `[LuminsAngels] Search failed for "${title}": ${error.message}`
+        );
+      }
+    }
+    for (const seriesPage of seriesPages.slice(0, 5)) {
+      try {
+        const exact = collectLinks(yield fetchText(seriesPage)).find(
+          (link) => titleMatches(link.context, titles) && episodeMatches(link.context, season, episode)
+        );
+        if (exact)
+          return exact.href;
+      } catch (_) {
+      }
+    }
+    return null;
+  });
+}
+function extractEmbeds(html) {
+  const $ = import_cheerio_without_node_native.default.load(html);
+  const embeds = /* @__PURE__ */ new Set();
+  $("iframe").each((_, element) => {
+    let source = $(element).attr("src") || $(element).attr("data-src") || $(element).attr("data-lazy-src");
+    if (!source)
+      return;
+    if (source.startsWith("//"))
+      source = "https:" + source;
+    if (/^https?:\/\//i.test(source))
+      embeds.add(source);
+  });
+  return Array.from(embeds);
+}
+function resolveVidmoly(embedUrl, pageUrl) {
+  return __async(this, null, function* () {
+    const html = yield fetchText(embedUrl, pageUrl);
+    const match = html.match(
+      /sources\s*:\s*\[\s*\{\s*file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i
+    ) || html.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);
+    return match ? match[1].replace(/\\\//g, "/").replace(/&amp;/g, "&") : null;
+  });
+}
+function extractStreams(pageUrl, season, episode) {
+  return __async(this, null, function* () {
+    const embeds = extractEmbeds(yield fetchText(pageUrl));
+    const streams = [];
+    const seen = /* @__PURE__ */ new Set();
+    for (const embedUrl of embeds) {
+      try {
+        let mediaUrl = null;
+        let host = null;
+        if (/vidmoly/i.test(embedUrl)) {
+          mediaUrl = yield resolveVidmoly(embedUrl, pageUrl);
+          host = "Vidmoly";
+        }
+        if (!mediaUrl || seen.has(mediaUrl))
+          continue;
+        seen.add(mediaUrl);
+        const origin = new URL(embedUrl).origin;
+        streams.push({
+          name: "Lumins Angels",
+          title: `${host}[RO] - S${season}E${episode}`,
+          url: mediaUrl,
+          quality: "Auto",
+          language: "ro",
+          headers: {
+            "User-Agent": USER_AGENT,
+            Referer: `${origin}/`,
+            Origin: origin
+          }
+        });
+      } catch (error) {
+        console.warn(
+          `[LuminsAngels] Failed to resolve ${embedUrl}: ${error.message}`
+        );
+      }
+    }
+    return streams;
+  });
+}
+
+// src/luminsangels/index.js
+function getStreams(tmdbId, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    if (mediaType !== "tv" && mediaType !== "series" || !season || !episode) {
+      return [];
+    }
+    try {
+      const mediaInfo = yield getSeriesInfo(tmdbId);
+      if (!mediaInfo)
+        return [];
+      const pageUrl = yield findEpisodePage(mediaInfo, season, episode);
+      if (!pageUrl) {
+        console.log(
+          `[LuminsAngels] No episode found for ${mediaInfo.title} S${season}E${episode}`
+        );
+        return [];
+      }
+      console.log(`[LuminsAngels] Matched episode: ${pageUrl}`);
+      return yield extractStreams(pageUrl, season, episode);
+    } catch (error) {
+      console.error(`[LuminsAngels] Error: ${error.message}`);
+      return [];
+    }
+  });
+}
+module.exports = { getStreams };

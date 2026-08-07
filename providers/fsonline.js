@@ -1,5 +1,291 @@
 /**
  * fsonline - Built from src/fsonline/
- * Generated: 2026-07-29T16:37:52.302Z
+ * Generated: 2026-08-07T22:22:17.106Z
  */
-var q=Object.create;var S=Object.defineProperty,D=Object.defineProperties,P=Object.getOwnPropertyDescriptor,k=Object.getOwnPropertyDescriptors,O=Object.getOwnPropertyNames,T=Object.getOwnPropertySymbols,B=Object.getPrototypeOf,z=Object.prototype.hasOwnProperty,I=Object.prototype.propertyIsEnumerable;var U=(t,e,a)=>e in t?S(t,e,{enumerable:!0,configurable:!0,writable:!0,value:a}):t[e]=a,d=(t,e)=>{for(var a in e||(e={}))z.call(e,a)&&U(t,a,e[a]);if(T)for(var a of T(e))I.call(e,a)&&U(t,a,e[a]);return t},g=(t,e)=>D(t,k(e));var N=(t,e,a,n)=>{if(e&&typeof e=="object"||typeof e=="function")for(let r of O(e))!z.call(t,r)&&r!==a&&S(t,r,{get:()=>e[r],enumerable:!(n=P(e,r))||n.enumerable});return t};var W=(t,e,a)=>(a=t!=null?q(B(t)):{},N(e||!t||!t.__esModule?S(a,"default",{value:t,enumerable:!0}):a,t));var i=(t,e,a)=>new Promise((n,r)=>{var s=o=>{try{c(a.next(o))}catch(h){r(h)}},m=o=>{try{c(a.throw(o))}catch(h){r(h)}},c=o=>o.done?n(o.value):Promise.resolve(o.value).then(s,m);c((a=a.apply(t,e)).next())});var x=W(require("cheerio-without-node-native"));var l="https://www3.fsonline.app",u={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",Referer:`${l}/`,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9"};function y(a){return i(this,arguments,function*(t,e={}){console.log(`[FSOnline] Fetching HTML: ${t}`);let n=yield fetch(t,{headers:d(d({},u),e.headers)});if(!n.ok)throw new Error(`HTTP ${n.status} on ${t}`);return yield n.text()})}function F(t){return i(this,null,function*(){let e=yield fetch(t);if(!e.ok)throw new Error(`TMDB HTTP ${e.status}`);return yield e.json()})}var K="31031042b5deb218a10d70a4c01ea934";function j(t){return t.toLowerCase().replace(/[^a-z0-9\s-]/g,"").trim().replace(/\s+/g,"-")}function J(t,e){return i(this,null,function*(){var s;let n=`https://api.themoviedb.org/3/${e==="tv"?"tv":"movie"}/${t}?api_key=${K}`,r=yield F(n);return{title:e==="tv"?r.name:r.title,year:((s=e==="tv"?r.first_air_date:r.release_date)==null?void 0:s.split("-")[0])||""}})}function X(t){return i(this,null,function*(){let e=[`https://vidmoly.to/e/${t}`,`https://vidmoly.me/w/${t}`,`https://vidmoly.to/w/${t}`,`https://vidmoly.me/embed-${t}.html`,`https://vidmoly.to/embed-${t}.html`,`https://vidmoly.me/${t}.html`,`https://vidmoly.to/${t}.html`];for(let a of e)try{let n=yield y(a,{headers:g(d({},u),{Referer:"https://player.fsonline.app/"})});if(n&&!n.includes("404 Not Found")){let r=n.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||n.match(/(https?:\/\/[^"'\s]+\.m3u8[^"'\s]*)/i);if(r)return r[1]}}catch(n){}return null})}function G(t,e,a,n,r){return i(this,null,function*(){let s=j(t);if(a==="movie")return`${l}/film/${s}-${e}/`;let m=[`${l}/tv/${s}-season-${n}-episode-${r}/`,`${l}/episoade/${s}-sezonul-${n}-episodul-${r}/`,`${l}/tv/${s}-sezonul-${n}-episodul-${r}/`,`${l}/episoade/${s}-season-${n}-episode-${r}/`];for(let c of m)try{let o=yield y(c);if(o&&!o.includes("404 Not Found")&&!o.includes("Page Not Found"))return c}catch(o){}return m[0]})}function V(t,e){return i(this,null,function*(){try{let a=yield y(t,{headers:g(d({},u),{Referer:`${l}/`})}),n=a.match(/file_code\s*=\s*['"]([a-zA-Z0-9]+)['"]/);if(n){let s=yield X(n[1]);if(s&&s.includes(".m3u8"))return{title:`${e} (Direct HLS)`,url:s,quality:"1080p",headers:{"User-Agent":u["User-Agent"],Referer:"https://vidmoly.me/"}}}let r=a.match(/(https?:\/\/[^"'\s]+\.m3u8[^"'\s]*)/i);if(r)return{title:`${e} (Direct HLS)`,url:r[1],quality:"1080p",headers:{"User-Agent":u["User-Agent"],Referer:t}}}catch(a){}return null})}function _(t,e,a,n){return i(this,null,function*(){let r=[],s=new Set;try{let m=yield J(t,e),c=yield G(m.title,m.year,e,a,n),o=yield y(c),h=x.default.load(o),w=h("#show_player_lazy").attr("movie-id")||h("[movie-id]").attr("movie-id");if(!w){let f=(h("body").attr("class")||"").match(/postid-(\d+)/);f&&(w=f[1])}if(w){let f=new URLSearchParams;f.append("action","lazy_player"),f.append("movieID",w);let A=yield fetch(`${l}/wp-admin/admin-ajax.php`,{method:"POST",headers:g(d({},u),{Referer:c,"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8","X-Requested-With":"XMLHttpRequest"}),body:f.toString()});if(A.ok){let M=yield A.text(),H=x.default.load(M)("li[data-vs]");for(let v=0;v<H.length;v++){let R=H.eq(v),b=R.attr("data-vs"),L=R.find("span").text().trim()||`Server ${v+1}`;if(b){let p=yield V(b,L);if(p&&p.url&&p.url.includes(".m3u8")&&!s.has(p.url)){s.add(p.url);let $=L.replace(/\s*\(Direct HLS\)/i,"");$.toLowerCase().includes("server")||($=`Server ${$}`);let E=$.replace(/^Server\s+/i,"");r.push({name:`FSOnline - ${E}`,title:$,url:p.url,quality:"1080p HD",headers:p.headers})}}}}}}catch(m){}return r})}function Y(t,e,a,n){return i(this,null,function*(){try{return yield _(t,e,a,n)}catch(r){return console.error(`[FSOnline] Error: ${r.message}`),[]}})}module.exports={getStreams:Y};
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/fsonline/extractor.js
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+
+// src/fsonline/http.js
+var BASE_URL = "https://www3.fsonline.app";
+var HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+  Referer: `${BASE_URL}/`,
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9"
+};
+function fetchText(_0) {
+  return __async(this, arguments, function* (url, options = {}) {
+    console.log(`[FSOnline] Fetching HTML: ${url}`);
+    const response = yield fetch(url, {
+      headers: __spreadValues(__spreadValues({}, HEADERS), options.headers)
+    });
+    if (!response.ok)
+      throw new Error(`HTTP ${response.status} on ${url}`);
+    return yield response.text();
+  });
+}
+function fetchJson(url) {
+  return __async(this, null, function* () {
+    const response = yield fetch(url);
+    if (!response.ok)
+      throw new Error(`TMDB HTTP ${response.status}`);
+    return yield response.json();
+  });
+}
+
+// src/fsonline/extractor.js
+var TMDB_API_KEY = "31031042b5deb218a10d70a4c01ea934";
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+}
+function getMediaInfo(tmdbId, mediaType) {
+  return __async(this, null, function* () {
+    var _a;
+    const type = mediaType === "tv" ? "tv" : "movie";
+    const url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${TMDB_API_KEY}`;
+    const data = yield fetchJson(url);
+    return {
+      title: mediaType === "tv" ? data.name : data.title,
+      year: ((_a = mediaType === "tv" ? data.first_air_date : data.release_date) == null ? void 0 : _a.split(
+        "-"
+      )[0]) || ""
+    };
+  });
+}
+function extractVidmolyStream(fileCode) {
+  return __async(this, null, function* () {
+    const candidates = [
+      `https://vidmoly.to/e/${fileCode}`,
+      `https://vidmoly.me/w/${fileCode}`,
+      `https://vidmoly.to/w/${fileCode}`,
+      `https://vidmoly.me/embed-${fileCode}.html`,
+      `https://vidmoly.to/embed-${fileCode}.html`,
+      `https://vidmoly.me/${fileCode}.html`,
+      `https://vidmoly.to/${fileCode}.html`
+    ];
+    for (const url of candidates) {
+      try {
+        const html = yield fetchText(url, {
+          headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: "https://player.fsonline.app/" })
+        });
+        if (html && !html.includes("404 Not Found")) {
+          const match = html.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i) || html.match(/(https?:\/\/[^"'\s]+\.m3u8[^"'\s]*)/i);
+          if (match) {
+            const directM3u8 = match[1];
+            try {
+              const probe = yield fetch(directM3u8, {
+                headers: {
+                  "User-Agent": HEADERS["User-Agent"],
+                  Referer: "https://vidmoly.me/",
+                  Accept: "*/*"
+                }
+              });
+              const probeBody = yield probe.text();
+              if (probe.ok && probeBody.startsWith("#EXTM3U")) {
+                return directM3u8;
+              }
+            } catch (e) {
+            }
+          }
+        }
+      } catch (e) {
+      }
+    }
+    return null;
+  });
+}
+function buildTargetUrl(title, year, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    const slug = slugify(title);
+    if (mediaType === "movie") {
+      return `${BASE_URL}/film/${slug}-${year}/`;
+    }
+    const tvCandidates = [
+      `${BASE_URL}/tv/${slug}-season-${season}-episode-${episode}/`,
+      `${BASE_URL}/episoade/${slug}-sezonul-${season}-episodul-${episode}/`,
+      `${BASE_URL}/tv/${slug}-sezonul-${season}-episodul-${episode}/`,
+      `${BASE_URL}/episoade/${slug}-season-${season}-episode-${episode}/`
+    ];
+    for (const candidate of tvCandidates) {
+      try {
+        const html = yield fetchText(candidate);
+        if (html && !html.includes("404 Not Found") && !html.includes("Page Not Found")) {
+          return candidate;
+        }
+      } catch (e) {
+      }
+    }
+    return tvCandidates[0];
+  });
+}
+function unpackPlayerPage(playerUrl, serverName) {
+  return __async(this, null, function* () {
+    const results = [];
+    try {
+      const html = yield fetchText(playerUrl, {
+        headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: `${BASE_URL}/` })
+      });
+      const fileCodeMatch = html.match(/file_code\s*=\s*['"]([a-zA-Z0-9]+)['"]/);
+      if (fileCodeMatch) {
+        const directM3u8 = yield extractVidmolyStream(fileCodeMatch[1]);
+        if (directM3u8 && directM3u8.includes(".m3u8")) {
+          results.push({
+            title: `${serverName} (Direct HLS)`,
+            url: directM3u8,
+            quality: "1080p",
+            headers: {
+              "User-Agent": HEADERS["User-Agent"],
+              Referer: "https://vidmoly.me/"
+            }
+          });
+        }
+      }
+    } catch (e) {
+    }
+    return results;
+  });
+}
+function getStreamsFromFSOnline(tmdbId, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    const streams = [];
+    const addedUrls = /* @__PURE__ */ new Set();
+    try {
+      const info = yield getMediaInfo(tmdbId, mediaType);
+      const targetUrl = yield buildTargetUrl(
+        info.title,
+        info.year,
+        mediaType,
+        season,
+        episode
+      );
+      const pageHtml = yield fetchText(targetUrl);
+      const $ = import_cheerio_without_node_native.default.load(pageHtml);
+      let movieId = $("#show_player_lazy").attr("movie-id") || $("[movie-id]").attr("movie-id");
+      if (!movieId) {
+        const bodyMatch = ($("body").attr("class") || "").match(/postid-(\d+)/);
+        if (bodyMatch)
+          movieId = bodyMatch[1];
+      }
+      if (movieId) {
+        const lazyParams = new URLSearchParams();
+        lazyParams.append("action", "lazy_player");
+        lazyParams.append("movieID", movieId);
+        const lazyRes = yield fetch(`${BASE_URL}/wp-admin/admin-ajax.php`, {
+          method: "POST",
+          headers: __spreadProps(__spreadValues({}, HEADERS), {
+            Referer: targetUrl,
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            "X-Requested-With": "XMLHttpRequest"
+          }),
+          body: lazyParams.toString()
+        });
+        if (lazyRes.ok) {
+          const lazyHtml = yield lazyRes.text();
+          const $lazy = import_cheerio_without_node_native.default.load(lazyHtml);
+          const serverTabs = $lazy("li[data-vs]");
+          for (let i = 0; i < serverTabs.length; i++) {
+            const el = serverTabs.eq(i);
+            const playerUrl = el.attr("data-vs");
+            const serverName = el.find("span").text().trim() || `Server ${i + 1}`;
+            if (playerUrl) {
+              const unpacked = yield unpackPlayerPage(playerUrl, serverName);
+              for (const stream of unpacked || []) {
+                if (stream.url && stream.url.includes(".m3u8") && !addedUrls.has(stream.url)) {
+                  addedUrls.add(stream.url);
+                  let cleanHost = serverName.replace(/\s*\(Direct HLS\)/i, "");
+                  if (!cleanHost.toLowerCase().includes("server")) {
+                    cleanHost = `Server ${cleanHost}`;
+                  }
+                  const hostLabel = cleanHost.replace(/^Server\s+/i, "");
+                  streams.push({
+                    name: `FSOnline - ${hostLabel}`,
+                    title: stream.title,
+                    url: stream.url,
+                    quality: stream.quality || "1080p",
+                    language: "ro",
+                    headers: stream.headers
+                  });
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+    }
+    return streams;
+  });
+}
+
+// src/fsonline/index.js
+function getStreams(tmdbId, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    try {
+      return yield getStreamsFromFSOnline(tmdbId, mediaType, season, episode);
+    } catch (error) {
+      console.error(`[FSOnline] Error: ${error.message}`);
+      return [];
+    }
+  });
+}
+module.exports = { getStreams };

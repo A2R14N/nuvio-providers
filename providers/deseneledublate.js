@@ -1,5 +1,618 @@
 /**
  * deseneledublate - Built from src/deseneledublate/
- * Generated: 2026-07-29T17:26:08.077Z
+ * Generated: 2026-08-07T21:48:51.967Z
  */
-var I=Object.create;var y=Object.defineProperty,J=Object.defineProperties,Q=Object.getOwnPropertyDescriptor,X=Object.getOwnPropertyDescriptors,Y=Object.getOwnPropertyNames,T=Object.getOwnPropertySymbols,Z=Object.getPrototypeOf,_=Object.prototype.hasOwnProperty,ee=Object.prototype.propertyIsEnumerable;var S=(r,n,t)=>n in r?y(r,n,{enumerable:!0,configurable:!0,writable:!0,value:t}):r[n]=t,v=(r,n)=>{for(var t in n||(n={}))_.call(n,t)&&S(r,t,n[t]);if(T)for(var t of T(n))ee.call(n,t)&&S(r,t,n[t]);return r},k=(r,n)=>J(r,X(n));var te=(r,n)=>{for(var t in n)y(r,t,{get:n[t],enumerable:!0})},z=(r,n,t,o)=>{if(n&&typeof n=="object"||typeof n=="function")for(let a of Y(n))!_.call(r,a)&&a!==t&&y(r,a,{get:()=>n[a],enumerable:!(o=Q(n,a))||o.enumerable});return r};var D=(r,n,t)=>(t=r!=null?I(Z(r)):{},z(n||!r||!r.__esModule?y(t,"default",{value:r,enumerable:!0}):t,r)),re=r=>z(y({},"__esModule",{value:!0}),r);var p=(r,n,t)=>new Promise((o,a)=>{var d=e=>{try{s(t.next(e))}catch(c){a(c)}},i=e=>{try{s(t.throw(e))}catch(c){a(c)}},s=e=>e.done?o(e.value):Promise.resolve(e.value).then(d,i);s((t=t.apply(r,n)).next())});var le={};te(le,{getStreams:()=>ae});module.exports=re(le);var A="439c478a771f35c05022f9feabcca01c",E="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";function M(r,n){return p(this,null,function*(){let t=n==="tv"||n==="series",o=t?"tv":"movie",a=t?"movie":"tv",d=`https://api.themoviedb.org/3/${o}/${r}?api_key=${A}&append_to_response=translations`;console.log(`[deseneledublate] Requesting TMDB URL: ${d}`);try{let i=yield fetch(d,{headers:{"User-Agent":E}});if(console.log(`[deseneledublate] TMDB Response status: ${i.status}`),i.ok||(d=`https://api.themoviedb.org/3/${a}/${r}?api_key=${A}&append_to_response=translations`,console.log(`[deseneledublate] Retrying TMDB secondary endpoint: ${d}`),i=yield fetch(d,{headers:{"User-Agent":E}})),!i.ok)return console.warn("[deseneledublate] TMDB 404. Returning null."),null;let s=yield i.json(),e=null;if(s.translations&&s.translations.translations){let u=s.translations.translations.find(f=>f.iso_639_1==="ro");u&&u.data&&(e=u.data.name||u.data.title)}let c=s.name||s.title||"Unknown",m=s.first_air_date||s.release_date,l=m?parseInt(m.split("-")[0]):null;return console.log(`[deseneledublate] TMDB Info: Title="${c}", TitleRo="${e||"N/A"}", Year=${l}`),{title:c,titleRo:e||c,year:l}}catch(i){return console.error("[deseneledublate] TMDB Fetch Exception:",i.message),null}})}var L=D(require("cheerio-without-node-native"));var x="https://deseneledublate.com",U="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";function R(r){return r.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s-]/g,"").trim().replace(/\s+/g,"-")}function b(r){return p(this,null,function*(){try{let n=yield fetch(r,{headers:{"User-Agent":U,Referer:x+"/"}});if(!n.ok)return null;try{let o=new URL(r),a=new URL(n.url||r);if(o.pathname!=="/"&&a.origin===o.origin&&a.pathname==="/")return console.warn(`[deseneledublate] Rejected homepage redirect for ${r}`),null}catch(o){}let t=yield n.text();return t.includes("404 Not Found")||t.includes("nu a fost g\u0103sit\u0103")||t.includes("Page Not Found")?null:t}catch(n){return console.error(`[deseneledublate] Fetch error for ${r}:`,n.message),null}})}function W(r){return{"User-Agent":U,Referer:`${r}/`,Origin:r}}function F(r,n){return p(this,null,function*(){try{let t=yield fetch(r,{headers:n});return t.ok?r.includes(".m3u8")?(yield t.text()).startsWith("#EXTM3U"):!0:!1}catch(t){return!1}})}function N(r){return p(this,null,function*(){var n;try{let t=yield b(r);if(!t||/video not found/i.test(t))return null;let o=null,a=t.match(/(?:https?:)?\/\/[^"'\\\s]+\/get_video\?[^"'\\\s<]+/i);if(a&&(o=a[0].startsWith("//")?`https:${a[0]}`:a[0]),!o){let s=(n=t.match(/\/get_video\?[^"'\\\s<+]+/i))==null?void 0:n[0],e=t.match(/token=['"]?\s*\+\s*\(['"]([^'"]+)['"]\)\.substring\((\d+)\)/i);s&&e&&(o=`${new URL(r).origin}${s}${e[1].substring(Number(e[2]))}`)}if(!o)return null;o=o.replace(/&amp;/g,"&");let d=new URL(r).origin,i=W(d);return(yield F(o,i))?{url:o,headers:i}:null}catch(t){return null}})}function j(r){return p(this,null,function*(){var n;try{let t=new URL(r),o=r.replace(/\/f\//,"/e/"),a=yield b(o);if(!a)return null;let d=(((n=a.match(/https?:\/\/[^"'\s\\]+\.m3u8[^"'\s\\]*/i))==null?void 0:n[0])||"").replace(/\\\//g,"/").replace(/&amp;/g,"&");if(!d)return null;let i=W(t.origin);return(yield F(d,i))?{url:d,headers:i}:null}catch(t){return null}})}function C(r){return p(this,null,function*(){if(!r)return[];let n=L.default.load(r),t=new Set,o=s=>{if(!s||typeof s!="string"||!s.startsWith("http://")&&!s.startsWith("https://"))return!1;let e=s.toLowerCase();return!(e.includes("youtube.com")||e.includes("youtu.be")||e.includes("wp-json")||e.includes("wp-content")||e.includes("wp-includes")||e.endsWith(".js")||e.includes(".js?")||e.includes("loadermain")||e.includes("googleapis.com")||e.includes("popads")||e.includes("doubleclick")||e.includes("adsterra")||e.includes("popunder"))},a=[];if(n("[data-post][data-type][data-nume], .dooplay_player_option, .server-item").each((s,e)=>{a.push({post:n(e).attr("data-post")||n(e).attr("data-id"),type:n(e).attr("data-type"),nume:n(e).attr("data-nume")||n(e).attr("data-option")})}),a.length>0){console.log(`[deseneledublate] Found ${a.length} DooPlay player options`);for(let s of a)try{let e=new URLSearchParams;e.append("action","doo_player_ajax"),e.append("post",s.post),e.append("nume",s.nume),e.append("type",s.type);let c=yield fetch(`${x}/wp-admin/admin-ajax.php`,{method:"POST",headers:{"User-Agent":U,"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8",Referer:x+"/"},body:e.toString()});if(c.ok){let m=yield c.json();if(m&&m.embed_url){let l=m.embed_url,u=l.match(/src=["']([^"']+)["']/i);u&&(l=u[1]),l.startsWith("//")&&(l="https:"+l),o(l)?(console.log(`[deseneledublate] Resolved DooPlay iframe: ${l}`),t.add(l)):console.log(`[deseneledublate] Filtered out non-playable/ad iframe: ${l.slice(0,60)}...`)}}}catch(e){console.error("[deseneledublate] DooPlay AJAX error:",e.message)}}let d=["ok.ru","filemoon","streamtape","vk.com","vidoza","videzz","supervideo","dood","mixdrop","upstream","voe.sx","streamwish","mp4upload","vidguard","vid-guard","vgembed","vguard"];return(r.match(/https?:\/\/[^\s"'<>\\]+/gi)||[]).forEach(s=>{let e=s.toLowerCase();if(d.some(c=>e.includes(c))&&o(s)){let c=s.replace(/['"\\>].*$/,"");t.add(c)}}),Array.from(t)})}function H(r,n,t,o,a,d=r,i=null){let s="Server",e=r.toLowerCase();e.includes("ok.ru")?s="OK.ru":e.includes("filemoon")?s="Filemoon":e.includes("streamtape")?s="Streamtape":e.includes("vk.com")?s="VK Video":e.includes("vidoza")||e.includes("videzz")?s="Vidoza":e.includes("dood")?s="DoodStream":e.includes("mixdrop")?s="Mixdrop":e.includes("supervideo")?s="SuperVideo":(e.includes("vidguard")||e.includes("vid-guard")||e.includes("vgembed")||e.includes("vguard"))&&(s="VidGuard");let m=(a==="tv"||a==="series")&&t&&o?`${n} S${t}E${o}`:`${n}`;return{name:`DeseneDublate - ${s}`,title:m,url:d,quality:"HD",headers:i||{"User-Agent":U,Referer:x+"/"}}}var O=D(require("cheerio-without-node-native"));var ne="https://clicksud.com.in",se={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",Referer:`${ne}/`,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"};function P(t){return p(this,arguments,function*(r,n={}){try{let o=yield fetch(r,{headers:v(v({},se),n)});if(!o.ok)throw new Error(`HTTP ${o.status}`);return yield o.text()}catch(o){return console.error(`[Clicksud] Fetch error for ${r}: ${o.message}`),null}})}function oe(r){let n=new URL(r),t=n.pathname.match(/\/(?:embed-)?([a-zA-Z0-9]+)(?:\.html)?\/?$/);return t?`${n.origin}/embed-${t[1]}.html`:r}function B(r){let n=String(r||"").match(/(\d{3,4})/);return n?Number(n[1]):0}function q(r){return p(this,null,function*(){var n;try{let t=oe(r),o=yield P(t,{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",Referer:t});if(!o)return null;let a=[],d=[/(?:file|src)\s*[:=,]?\s*["']([^"']+)["'][^}\]]*?\bres\s*[:=]\s*["']?([^"',}\]]+)/gi,/\bres\s*[:=]\s*["']?([^"',}\]]+)[^}\]]*?(?:file|src)\s*[:=,]?\s*["']([^"']+)["']/gi],i;for(;i=d[0].exec(o);)a.push({url:i[1],quality:B(i[2])});for(;i=d[1].exec(o);)a.push({url:i[2],quality:B(i[1])});if(!a.length){let e=o.match(/["'](https?:\/\/[^"']+\.(?:m3u8|mp4)[^"']*)["']/i);e&&a.push({url:e[1],quality:0})}return((n=a.map(e=>{let c=e.url.replace(/\\\//g,"/").replace(/&amp;/g,"&");return c.startsWith("//")?c=`https:${c}`:c.startsWith("/")&&(c=new URL(c,t).href),k(v({},e),{url:c})}).filter(e=>/^https?:\/\//i.test(e.url)).sort((e,c)=>c.quality-e.quality)[0])==null?void 0:n.url)||null}catch(t){return console.error(`[Vidoza] Resolution error: ${t.message}`),null}})}var $="https://deseneledublate.com";function ae(r,n,t,o){return p(this,null,function*(){console.log(`[deseneledublate] getStreams started: ID=${r}, type=${n}, S=${t}, E=${o}`);try{let a=yield M(r,n);if(!a)return[];let d=Array.from(new Set([a.titleRo,a.title].filter(Boolean)));console.log("[deseneledublate] Searching titles:",d);let i=n==="tv"||n==="series",s=null,e=a.titleRo||a.title;for(let l of d){let u=R(l),f=[];i&&t&&o?f=[`${$}/episoade/${u}-sezonul-${t}-episodul-${o}-dublat-in-romana/`,`${$}/episoade/${u}-sezonul-${t}-episodul-${o}/`,`${$}/${u}-sezonul-${t}-episodul-${o}-dublat-in-romana/`]:(a.year&&(f.push(`${$}/desen/${u}-${a.year}-dublat-in-romana/`),f.push(`${$}/${u}-${a.year}-dublat-in-romana/`)),f.push(`${$}/desen/${u}-dublat-in-romana/`),f.push(`${$}/${u}-dublat-in-romana/`));for(let h of f){console.log(`[deseneledublate] Testing URL: ${h}`);let w=yield b(h);if(w){console.log(`[deseneledublate] Found valid page at ${h}`),s=w,e=l;break}}if(s)break}if(!s)for(let l of d){let u=l.replace(/[:\-]/g," ").trim(),f=`${$}/?s=${encodeURIComponent(u)}`;console.log(`[deseneledublate] Searching site: ${f}`);let h=yield b(f);if(h){let w=O.default.load(h),V=R(l);if(w("a[href]").each((ie,K)=>{let g=w(K).attr("href");if(!(!g||s))if(i&&t&&o){let G=`sezonul-${t}-episodul-${o}`;g.includes(G)&&(console.log(`[deseneledublate] Found TV search result link: ${g}`),s=g)}else(g.includes("/desen/")||g.includes(V))&&!g.includes("/episoade/")&&(console.log(`[deseneledublate] Found Movie search result link: ${g}`),s=g)}),typeof s=="string"&&(s=yield b(s),s))break}}if(!s)return console.log("[deseneledublate] Could not find media page."),[];let c=yield C(s);console.log(`[deseneledublate] Discovered ${c.length} embed link(s)`);let m=[];for(let l of c){let u=null;if(l.includes("vidoza.net")||l.includes("vidoza.co")||l.includes("videzz.net")){let f=yield q(l);if(f){let h=new URL(l).origin;u={url:f,headers:{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",Referer:`${h}/`,Origin:h}}}}else l.includes("streamtape")?u=yield N(l):l.includes("desene.deseneledublate.com")&&(u=yield j(l));u!=null&&u.url&&m.push(H(l,e,t,o,n,u.url,u.headers))}return m}catch(a){return console.error("[deseneledublate] Error:",a.message),[]}})}
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/deseneledublate/index.js
+var deseneledublate_exports = {};
+__export(deseneledublate_exports, {
+  getStreams: () => getStreams
+});
+module.exports = __toCommonJS(deseneledublate_exports);
+
+// src/deseneledublate/tmdb.js
+var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+function fetchTmdbDetails(tmdbId, mediaType) {
+  return __async(this, null, function* () {
+    const isTv = mediaType === "tv" || mediaType === "series";
+    const primaryEndpoint = isTv ? "tv" : "movie";
+    const secondaryEndpoint = isTv ? "movie" : "tv";
+    let url = `https://api.themoviedb.org/3/${primaryEndpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=translations`;
+    console.log(`[deseneledublate] Requesting TMDB URL: ${url}`);
+    try {
+      let res = yield fetch(url, { headers: { "User-Agent": USER_AGENT } });
+      console.log(`[deseneledublate] TMDB Response status: ${res.status}`);
+      if (!res.ok) {
+        url = `https://api.themoviedb.org/3/${secondaryEndpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=translations`;
+        console.log(`[deseneledublate] Retrying TMDB secondary endpoint: ${url}`);
+        res = yield fetch(url, { headers: { "User-Agent": USER_AGENT } });
+      }
+      if (!res.ok) {
+        console.warn(`[deseneledublate] TMDB 404. Returning null.`);
+        return null;
+      }
+      const data = yield res.json();
+      let titleRo = null;
+      if (data.translations && data.translations.translations) {
+        const roTrans = data.translations.translations.find(
+          (t) => t.iso_639_1 === "ro"
+        );
+        if (roTrans && roTrans.data) {
+          titleRo = roTrans.data.name || roTrans.data.title;
+        }
+      }
+      const primaryTitle = data.name || data.title || "Unknown";
+      const releaseDate = data.first_air_date || data.release_date;
+      const year = releaseDate ? parseInt(releaseDate.split("-")[0]) : null;
+      console.log(
+        `[deseneledublate] TMDB Info: Title="${primaryTitle}", TitleRo="${titleRo || "N/A"}", Year=${year}`
+      );
+      return {
+        title: primaryTitle,
+        titleRo: titleRo || primaryTitle,
+        year
+      };
+    } catch (e) {
+      console.error("[deseneledublate] TMDB Fetch Exception:", e.message);
+      return null;
+    }
+  });
+}
+
+// src/deseneledublate/extractors.js
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var BASE_URL = "https://deseneledublate.com";
+var USER_AGENT2 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+function slugify(text) {
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+}
+function fetchHtml(url) {
+  return __async(this, null, function* () {
+    try {
+      const response = yield fetch(url, {
+        headers: {
+          "User-Agent": USER_AGENT2,
+          Referer: BASE_URL + "/"
+        }
+      });
+      if (!response.ok)
+        return null;
+      try {
+        const requested = new URL(url);
+        const finalUrl = new URL(response.url || url);
+        if (requested.pathname !== "/" && finalUrl.origin === requested.origin && finalUrl.pathname === "/") {
+          console.warn(
+            `[deseneledublate] Rejected homepage redirect for ${url}`
+          );
+          return null;
+        }
+      } catch (_) {
+      }
+      const text = yield response.text();
+      if (text.includes("404 Not Found") || text.includes("nu a fost g\u0103sit\u0103") || text.includes("Page Not Found")) {
+        return null;
+      }
+      return text;
+    } catch (e) {
+      console.error(`[deseneledublate] Fetch error for ${url}:`, e.message);
+      return null;
+    }
+  });
+}
+function mediaHeaders(origin) {
+  return {
+    "User-Agent": USER_AGENT2,
+    Referer: `${origin}/`,
+    Origin: origin
+  };
+}
+function validateMediaUrl(url, headers) {
+  return __async(this, null, function* () {
+    try {
+      const response = yield fetch(url, { headers });
+      if (!response.ok)
+        return false;
+      if (url.includes(".m3u8")) {
+        const playlist = yield response.text();
+        return playlist.startsWith("#EXTM3U");
+      }
+      return true;
+    } catch (_) {
+      return false;
+    }
+  });
+}
+function resolveStreamtape(embedUrl) {
+  return __async(this, null, function* () {
+    var _a;
+    try {
+      const html = yield fetchHtml(embedUrl);
+      if (!html || /video not found/i.test(html))
+        return null;
+      let mediaUrl = null;
+      const direct = html.match(
+        /(?:https?:)?\/\/[^"'\\\s]+\/get_video\?[^"'\\\s<]+/i
+      );
+      if (direct) {
+        mediaUrl = direct[0].startsWith("//") ? `https:${direct[0]}` : direct[0];
+      }
+      if (!mediaUrl) {
+        const path = (_a = html.match(/\/get_video\?[^"'\\\s<+]+/i)) == null ? void 0 : _a[0];
+        const token = html.match(
+          /token=['"]?\s*\+\s*\(['"]([^'"]+)['"]\)\.substring\((\d+)\)/i
+        );
+        if (path && token) {
+          mediaUrl = `${new URL(embedUrl).origin}${path}${token[1].substring(
+            Number(token[2])
+          )}`;
+        }
+      }
+      if (!mediaUrl)
+        return null;
+      mediaUrl = mediaUrl.replace(/&amp;/g, "&");
+      const origin = new URL(embedUrl).origin;
+      const headers = mediaHeaders(origin);
+      if (!(yield validateMediaUrl(mediaUrl, headers)))
+        return null;
+      return { url: mediaUrl, headers };
+    } catch (_) {
+      return null;
+    }
+  });
+}
+function resolveDeseneMirror(embedUrl) {
+  return __async(this, null, function* () {
+    var _a;
+    try {
+      const urlObject = new URL(embedUrl);
+      const playerUrl = embedUrl.replace(/\/f\//, "/e/");
+      const html = yield fetchHtml(playerUrl);
+      if (!html)
+        return null;
+      const mediaUrl = (((_a = html.match(/https?:\/\/[^"'\s\\]+\.m3u8[^"'\s\\]*/i)) == null ? void 0 : _a[0]) || "").replace(/\\\//g, "/").replace(/&amp;/g, "&");
+      if (!mediaUrl)
+        return null;
+      const headers = mediaHeaders(urlObject.origin);
+      if (!(yield validateMediaUrl(mediaUrl, headers)))
+        return null;
+      return { url: mediaUrl, headers };
+    } catch (_) {
+      return null;
+    }
+  });
+}
+function extractEmbedsFromPage(html) {
+  return __async(this, null, function* () {
+    if (!html)
+      return [];
+    const $ = import_cheerio_without_node_native.default.load(html);
+    const embedUrls = /* @__PURE__ */ new Set();
+    const isPlayableEmbed = (url) => {
+      if (!url || typeof url !== "string")
+        return false;
+      if (!url.startsWith("http://") && !url.startsWith("https://"))
+        return false;
+      const lower = url.toLowerCase();
+      if (lower.includes("youtube.com") || lower.includes("youtu.be"))
+        return false;
+      if (lower.includes("wp-json") || lower.includes("wp-content") || lower.includes("wp-includes"))
+        return false;
+      if (lower.endsWith(".js") || lower.includes(".js?") || lower.includes("loadermain") || lower.includes("googleapis.com"))
+        return false;
+      if (lower.includes("popads") || lower.includes("doubleclick") || lower.includes("adsterra") || lower.includes("popunder"))
+        return false;
+      return true;
+    };
+    const playerOptions = [];
+    $(
+      "[data-post][data-type][data-nume], .dooplay_player_option, .server-item"
+    ).each((_, el) => {
+      playerOptions.push({
+        post: $(el).attr("data-post") || $(el).attr("data-id"),
+        type: $(el).attr("data-type"),
+        nume: $(el).attr("data-nume") || $(el).attr("data-option")
+      });
+    });
+    if (playerOptions.length > 0) {
+      console.log(
+        `[deseneledublate] Found ${playerOptions.length} DooPlay player options`
+      );
+      for (const opt of playerOptions) {
+        try {
+          const formData = new URLSearchParams();
+          formData.append("action", "doo_player_ajax");
+          formData.append("post", opt.post);
+          formData.append("nume", opt.nume);
+          formData.append("type", opt.type);
+          const ajaxRes = yield fetch(`${BASE_URL}/wp-admin/admin-ajax.php`, {
+            method: "POST",
+            headers: {
+              "User-Agent": USER_AGENT2,
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+              Referer: BASE_URL + "/"
+            },
+            body: formData.toString()
+          });
+          if (ajaxRes.ok) {
+            const ajaxData = yield ajaxRes.json();
+            if (ajaxData && ajaxData.embed_url) {
+              let embed = ajaxData.embed_url;
+              const iframeMatch = embed.match(/src=["']([^"']+)["']/i);
+              if (iframeMatch)
+                embed = iframeMatch[1];
+              if (embed.startsWith("//"))
+                embed = "https:" + embed;
+              if (isPlayableEmbed(embed)) {
+                console.log(
+                  `[deseneledublate] Resolved DooPlay iframe: ${embed}`
+                );
+                embedUrls.add(embed);
+              } else {
+                console.log(
+                  `[deseneledublate] Filtered out non-playable/ad iframe: ${embed.slice(0, 60)}...`
+                );
+              }
+            }
+          }
+        } catch (e) {
+          console.error("[deseneledublate] DooPlay AJAX error:", e.message);
+        }
+      }
+    }
+    const knownHosts = [
+      "ok.ru",
+      "filemoon",
+      "streamtape",
+      "vk.com",
+      "vidoza",
+      "videzz",
+      "supervideo",
+      "dood",
+      "mixdrop",
+      "upstream",
+      "voe.sx",
+      "streamwish",
+      "mp4upload",
+      "vidguard",
+      "vid-guard",
+      "vgembed",
+      "vguard"
+    ];
+    const rawUrls = html.match(/https?:\/\/[^\s"'<>\\]+/gi) || [];
+    rawUrls.forEach((url) => {
+      const lower = url.toLowerCase();
+      if (knownHosts.some((host) => lower.includes(host)) && isPlayableEmbed(url)) {
+        const cleaned = url.replace(/['"\\>].*$/, "");
+        embedUrls.add(cleaned);
+      }
+    });
+    return Array.from(embedUrls);
+  });
+}
+function buildStreamObject(embedUrl, showTitle, season, episode, mediaType, playbackUrl = embedUrl, playbackHeaders = null) {
+  let serverName = "Server";
+  const lower = embedUrl.toLowerCase();
+  if (lower.includes("ok.ru"))
+    serverName = "OK.ru";
+  else if (lower.includes("filemoon"))
+    serverName = "Filemoon";
+  else if (lower.includes("streamtape"))
+    serverName = "Streamtape";
+  else if (lower.includes("vk.com"))
+    serverName = "VK Video";
+  else if (lower.includes("vidoza") || lower.includes("videzz"))
+    serverName = "Vidoza";
+  else if (lower.includes("dood"))
+    serverName = "DoodStream";
+  else if (lower.includes("mixdrop"))
+    serverName = "Mixdrop";
+  else if (lower.includes("supervideo"))
+    serverName = "SuperVideo";
+  else if (lower.includes("vidguard") || lower.includes("vid-guard") || lower.includes("vgembed") || lower.includes("vguard"))
+    serverName = "VidGuard";
+  const isTv = mediaType === "tv" || mediaType === "series";
+  const displayTitle = isTv && season && episode ? `${showTitle} S${season}E${episode}` : `${showTitle}`;
+  return {
+    name: `DeseneDublate - ${serverName}`,
+    title: displayTitle,
+    url: playbackUrl,
+    quality: "Auto",
+    language: "ro",
+    headers: playbackHeaders || {
+      "User-Agent": USER_AGENT2,
+      Referer: BASE_URL + "/"
+    }
+  };
+}
+
+// src/deseneledublate/index.js
+var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
+
+// src/clicksud/http.js
+var BASE_URL2 = "https://clicksud.com.in";
+var HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",
+  Referer: `${BASE_URL2}/`,
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+};
+function fetchText(_0) {
+  return __async(this, arguments, function* (url, customHeaders = {}) {
+    try {
+      const response = yield fetch(url, {
+        headers: __spreadValues(__spreadValues({}, HEADERS), customHeaders)
+      });
+      if (!response.ok)
+        throw new Error(`HTTP ${response.status}`);
+      return yield response.text();
+    } catch (e) {
+      console.error(`[Clicksud] Fetch error for ${url}: ${e.message}`);
+      return null;
+    }
+  });
+}
+
+// src/clicksud/resolvers/vidoza.js
+function normalizeEmbedUrl(input) {
+  const url = new URL(input);
+  const match = url.pathname.match(
+    /\/(?:embed-)?([a-zA-Z0-9]+)(?:\.html)?\/?$/
+  );
+  if (!match)
+    return input;
+  return `${url.origin}/embed-${match[1]}.html`;
+}
+function parseQuality(value) {
+  const match = String(value || "").match(/(\d{3,4})/);
+  return match ? Number(match[1]) : 0;
+}
+function resolveVidoza(embedUrl) {
+  return __async(this, null, function* () {
+    var _a;
+    try {
+      const normalizedUrl = normalizeEmbedUrl(embedUrl);
+      const html = yield fetchText(normalizedUrl, {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",
+        Referer: normalizedUrl
+      });
+      if (!html)
+        return null;
+      const sources = [];
+      const patterns = [
+        /(?:file|src)\s*[:=,]?\s*["']([^"']+)["'][^}\]]*?\bres\s*[:=]\s*["']?([^"',}\]]+)/gi,
+        /\bres\s*[:=]\s*["']?([^"',}\]]+)[^}\]]*?(?:file|src)\s*[:=,]?\s*["']([^"']+)["']/gi
+      ];
+      let match;
+      while (match = patterns[0].exec(html)) {
+        sources.push({ url: match[1], quality: parseQuality(match[2]) });
+      }
+      while (match = patterns[1].exec(html)) {
+        sources.push({ url: match[2], quality: parseQuality(match[1]) });
+      }
+      if (!sources.length) {
+        const direct = html.match(
+          /["'](https?:\/\/[^"']+\.(?:m3u8|mp4)[^"']*)["']/i
+        );
+        if (direct)
+          sources.push({ url: direct[1], quality: 0 });
+      }
+      const playable = sources.map((source) => {
+        let url = source.url.replace(/\\\//g, "/").replace(/&amp;/g, "&");
+        if (url.startsWith("//"))
+          url = `https:${url}`;
+        else if (url.startsWith("/"))
+          url = new URL(url, normalizedUrl).href;
+        return __spreadProps(__spreadValues({}, source), { url });
+      }).filter((source) => /^https?:\/\//i.test(source.url)).sort((left, right) => right.quality - left.quality);
+      return ((_a = playable[0]) == null ? void 0 : _a.url) || null;
+    } catch (error) {
+      console.error(`[Vidoza] Resolution error: ${error.message}`);
+      return null;
+    }
+  });
+}
+
+// src/deseneledublate/index.js
+var BASE_URL3 = "https://deseneledublate.com";
+function getStreams(tmdbId, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    console.log(
+      `[deseneledublate] getStreams started: ID=${tmdbId}, type=${mediaType}, S=${season}, E=${episode}`
+    );
+    try {
+      const tmdbData = yield fetchTmdbDetails(tmdbId, mediaType);
+      if (!tmdbData)
+        return [];
+      const titlesToTry = Array.from(
+        new Set([tmdbData.titleRo, tmdbData.title].filter(Boolean))
+      );
+      console.log("[deseneledublate] Searching titles:", titlesToTry);
+      const isTv = mediaType === "tv" || mediaType === "series";
+      let pageHtml = null;
+      let matchedTitle = tmdbData.titleRo || tmdbData.title;
+      for (const title of titlesToTry) {
+        const slug = slugify(title);
+        let urlsToTry = [];
+        if (isTv && season && episode) {
+          urlsToTry = [
+            `${BASE_URL3}/episoade/${slug}-sezonul-${season}-episodul-${episode}-dublat-in-romana/`,
+            `${BASE_URL3}/episoade/${slug}-sezonul-${season}-episodul-${episode}/`,
+            `${BASE_URL3}/${slug}-sezonul-${season}-episodul-${episode}-dublat-in-romana/`
+          ];
+        } else {
+          if (tmdbData.year) {
+            urlsToTry.push(
+              `${BASE_URL3}/desen/${slug}-${tmdbData.year}-dublat-in-romana/`
+            );
+            urlsToTry.push(
+              `${BASE_URL3}/${slug}-${tmdbData.year}-dublat-in-romana/`
+            );
+          }
+          urlsToTry.push(`${BASE_URL3}/desen/${slug}-dublat-in-romana/`);
+          urlsToTry.push(`${BASE_URL3}/${slug}-dublat-in-romana/`);
+        }
+        for (const targetUrl of urlsToTry) {
+          console.log(`[deseneledublate] Testing URL: ${targetUrl}`);
+          const html = yield fetchHtml(targetUrl);
+          if (html) {
+            console.log(`[deseneledublate] Found valid page at ${targetUrl}`);
+            pageHtml = html;
+            matchedTitle = title;
+            break;
+          }
+        }
+        if (pageHtml)
+          break;
+      }
+      if (!pageHtml) {
+        for (const title of titlesToTry) {
+          const cleanQuery = title.replace(/[:\-]/g, " ").trim();
+          const searchUrl = `${BASE_URL3}/?s=${encodeURIComponent(cleanQuery)}`;
+          console.log(`[deseneledublate] Searching site: ${searchUrl}`);
+          const searchHtml = yield fetchHtml(searchUrl);
+          if (searchHtml) {
+            const $ = import_cheerio_without_node_native2.default.load(searchHtml);
+            const targetSlug = slugify(title);
+            $("a[href]").each((_, el) => {
+              const href = $(el).attr("href");
+              if (!href || pageHtml)
+                return;
+              if (isTv && season && episode) {
+                const epSearchStr = `sezonul-${season}-episodul-${episode}`;
+                if (href.includes(epSearchStr)) {
+                  console.log(
+                    `[deseneledublate] Found TV search result link: ${href}`
+                  );
+                  pageHtml = href;
+                }
+              } else {
+                if ((href.includes("/desen/") || href.includes(targetSlug)) && !href.includes("/episoade/")) {
+                  console.log(
+                    `[deseneledublate] Found Movie search result link: ${href}`
+                  );
+                  pageHtml = href;
+                }
+              }
+            });
+            if (typeof pageHtml === "string") {
+              pageHtml = yield fetchHtml(pageHtml);
+              if (pageHtml)
+                break;
+            }
+          }
+        }
+      }
+      if (!pageHtml) {
+        console.log("[deseneledublate] Could not find media page.");
+        return [];
+      }
+      const embedUrls = yield extractEmbedsFromPage(pageHtml);
+      console.log(
+        `[deseneledublate] Discovered ${embedUrls.length} embed link(s)`
+      );
+      const streams = [];
+      for (const embedUrl of embedUrls) {
+        let resolved = null;
+        if (embedUrl.includes("vidoza.net") || embedUrl.includes("vidoza.co") || embedUrl.includes("videzz.net")) {
+          const streamUrl = yield resolveVidoza(embedUrl);
+          if (streamUrl) {
+            const origin = new URL(embedUrl).origin;
+            resolved = {
+              url: streamUrl,
+              headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",
+                Referer: `${origin}/`,
+                Origin: origin
+              }
+            };
+          }
+        } else if (embedUrl.includes("streamtape")) {
+          resolved = yield resolveStreamtape(embedUrl);
+        } else if (embedUrl.includes("desene.deseneledublate.com")) {
+          resolved = yield resolveDeseneMirror(embedUrl);
+        }
+        if (!(resolved == null ? void 0 : resolved.url))
+          continue;
+        streams.push(
+          buildStreamObject(
+            embedUrl,
+            matchedTitle,
+            season,
+            episode,
+            mediaType,
+            resolved.url,
+            resolved.headers
+          )
+        );
+      }
+      return streams;
+    } catch (error) {
+      console.error("[deseneledublate] Error:", error.message);
+      return [];
+    }
+  });
+}

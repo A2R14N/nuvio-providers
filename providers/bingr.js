@@ -1,6 +1,6 @@
 /**
  * bingr - Built from src/bingr/
- * Generated: 2026-07-30T17:55:42.533Z
+ * Generated: 2026-08-07T21:48:51.955Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -51,7 +51,9 @@ function normalizeSubtitles(subtitles) {
   return subtitles.filter((subtitle) => subtitle && subtitle.url).map((subtitle) => ({
     url: subtitle.url,
     lang: subtitle.lang || subtitle.language || "und",
-    label: subtitle.label || subtitle.name || subtitle.lang || subtitle.language || "Subtitle"
+    language: subtitle.language || subtitle.lang || "und",
+    label: subtitle.label || subtitle.name || subtitle.lang || subtitle.language || "Subtitle",
+    name: subtitle.name || subtitle.label || subtitle.lang || subtitle.language || "Subtitle"
   }));
 }
 function fetchServer(server, mediaType, tmdbId, query) {
@@ -78,6 +80,7 @@ function fetchServer(server, mediaType, tmdbId, query) {
           title: `${server.name} - ${sourceLabel}`,
           url: source.url,
           quality,
+          language: "en",
           type: source.type,
           headers: source.headers || {},
           subtitles: normalizeSubtitles(source.subtitles).concat(subtitles)
@@ -91,6 +94,9 @@ function fetchServer(server, mediaType, tmdbId, query) {
 }
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
+    const settings = globalThis.SCRAPER_SETTINGS || {};
+    const selectedServer = settings.server || "all";
+    const servers = selectedServer === "all" ? SERVERS : SERVERS.filter((server) => server.id === selectedServer);
     const normalizedType = mediaType === "series" ? "tv" : mediaType;
     if (!tmdbId || normalizedType !== "movie" && normalizedType !== "tv" || normalizedType === "tv" && (!season || !episode)) {
       return [];
@@ -110,7 +116,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
         query.episode = Number(episode);
       }
       const results = yield Promise.all(
-        SERVERS.map(
+        servers.map(
           (server) => fetchServer(server, normalizedType, tmdbId, query)
         )
       );
@@ -128,4 +134,21 @@ function getStreams(tmdbId, mediaType, season, episode) {
     }
   });
 }
-module.exports = { getStreams };
+function onSettings() {
+  return [
+    {
+      type: "select",
+      key: "server",
+      label: "Preferred Server",
+      description: "Query only the selected Bingr server, or query all.",
+      options: [
+        { label: "All servers", value: "all" },
+        { label: "Sirius (s11)", value: "s11" },
+        { label: "Quasar (s12)", value: "s12" },
+        { label: "Luna (s4)", value: "s4" }
+      ],
+      defaultValue: "all"
+    }
+  ];
+}
+module.exports = { getStreams, onSettings };

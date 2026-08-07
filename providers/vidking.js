@@ -1,6 +1,6 @@
 /**
  * vidking - Built from src/vidking/
- * Generated: 2026-07-30T18:30:40.922Z
+ * Generated: 2026-08-07T21:48:52.014Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -269,7 +269,9 @@ function normalizeSubtitles(subtitles) {
   return subtitles.filter((subtitle) => subtitle && subtitle.url).map((subtitle) => ({
     url: subtitle.url,
     lang: subtitle.lang || subtitle.language || "und",
-    label: subtitle.label || subtitle.display || subtitle.language || "Subtitle"
+    language: subtitle.language || subtitle.lang || "und",
+    label: subtitle.label || subtitle.display || subtitle.language || "Subtitle",
+    name: subtitle.label || subtitle.display || subtitle.language || "Subtitle"
   }));
 }
 function fetchServer(server, request, seed) {
@@ -297,6 +299,7 @@ function fetchServer(server, request, seed) {
         title: `${server.name} - ${source.quality || source.label || `Source ${index + 1}`}`,
         url: source.url,
         quality: source.quality || source.label || "Auto",
+        language: "en",
         type: source.type || (source.url.includes(".mpd") ? "application/dash+xml" : source.url.includes(".mp4") ? "video/mp4" : "application/x-mpegurl"),
         headers: Object.assign({}, API_HEADERS, source.headers || {}),
         subtitles: normalizeSubtitles(source.subtitles).concat(

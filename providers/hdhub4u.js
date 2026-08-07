@@ -1,6 +1,6 @@
 /**
  * hdhub4u - Built from src/hdhub4u/
- * Generated: 2026-07-30T20:46:15.597Z
+ * Generated: 2026-08-07T21:48:51.994Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -411,6 +411,7 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
         title: stream.title || `${metadata.title} - ${stream.quality}`,
         url: stream.url,
         quality: stream.quality,
+        language: "hi \u2022 en",
         size: stream.size,
         provider: "hdhub4u"
       }));

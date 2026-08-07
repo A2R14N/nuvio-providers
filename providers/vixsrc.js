@@ -1,6 +1,6 @@
 /**
  * vixsrc - Built from src/vixsrc/
- * Generated: 2026-08-06T13:03:47.497Z
+ * Generated: 2026-08-07T21:48:52.017Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -110,7 +110,9 @@ function parseSubtitlesFromM3u8(playlistText) {
       subtitles.push({
         url: formatM3u8Url(url),
         lang,
-        label
+        label,
+        language: lang,
+        name: label
       });
     }
   }
@@ -139,6 +141,7 @@ function parseRenditionsFromM3u8(playlistText) {
         title: `VixSrc - ${quality}`,
         url: formatM3u8Url(line),
         quality,
+        language: "en",
         type: "application/x-mpegurl",
         headers: DEFAULT_HEADERS
       });
@@ -202,6 +205,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
           title: "VixSrc - 1080p",
           url: finalPlaylistUrl,
           quality: "1080p",
+          language: "en",
           type: "application/x-mpegurl",
           headers: DEFAULT_HEADERS,
           subtitles

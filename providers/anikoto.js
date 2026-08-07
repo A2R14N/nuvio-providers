@@ -1,6 +1,6 @@
 /**
  * anikoto - Built from src/anikoto/
- * Generated: 2026-08-07T05:52:35.373Z
+ * Generated: 2026-08-07T21:48:51.951Z
  */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -536,10 +536,15 @@ function resolveMega(embedUrl) {
 function buildSubtitles(tracks) {
   if (!Array.isArray(tracks))
     return [];
-  return tracks.filter((t) => t && t.file).map((t) => ({
-    url: t.file,
-    lang: t.label || "Unknown"
-  }));
+  return tracks.filter((t) => t && t.file).map((t) => {
+    const label = t.label || "Unknown";
+    return {
+      url: t.file,
+      lang: label,
+      language: label,
+      name: label
+    };
+  });
 }
 function audioLabelFromUrl(embedUrl) {
   try {
@@ -571,6 +576,7 @@ function buildStream(showTitle, season, episode, mediaType, url, subtitles, serv
     title: serverName ? `${displayTitle} ${label}` : `${displayTitle} ${audioLabel || ""}`.trim(),
     url,
     quality: isM3u8 ? "Auto" : "1080p",
+    language: "en",
     headers: {
       "User-Agent": USER_AGENT2,
       Referer: `${ref}/`,

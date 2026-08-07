@@ -1,6 +1,6 @@
 /**
  * 1shows - Built from src/1shows/
- * Generated: 2026-08-02T10:01:57.341Z
+ * Generated: 2026-08-07T21:48:51.931Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -1160,6 +1160,7 @@ function streamFromUrl(source, resolved, index, total) {
     title: `${release || String(source.label || name).replace(/р/gi, "p")}${total > 1 ? ` \xB7 Server ${index + 1}` : ""}`,
     url,
     quality: displayQuality(displayResolved, qualityText),
+    language: "en",
     size: sizeFromLabel(source.label || ""),
     type: typeFromUrl(url),
     headers: {
@@ -1243,6 +1244,8 @@ function mediaFingerprint(stream) {
 }
 function getStreams(tmdbId, mediaType, season, episode, onlyFamily) {
   return __async(this, null, function* () {
+    const settings = globalThis.SCRAPER_SETTINGS || {};
+    const familyOnly = onlyFamily === void 0 ? settings.familyOnly === true : onlyFamily;
     const normalizedType = mediaType === "series" ? "tv" : mediaType;
     if (!tmdbId || normalizedType !== "movie" && normalizedType !== "tv") {
       return [];
@@ -1311,4 +1314,15 @@ function getStreams(tmdbId, mediaType, season, episode, onlyFamily) {
     }
   });
 }
-module.exports = { getStreams };
+function onSettings() {
+  return [
+    {
+      type: "toggle",
+      key: "familyOnly",
+      label: "Family Friendly Only",
+      description: "Only show streams rated safe for family viewing.",
+      defaultValue: false
+    }
+  ];
+}
+module.exports = { getStreams, onSettings };

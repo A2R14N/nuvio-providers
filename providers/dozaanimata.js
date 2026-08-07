@@ -1,5 +1,827 @@
 /**
  * dozaanimata - Built from src/dozaanimata/
- * Generated: 2026-07-29T16:37:52.296Z
+ * Generated: 2026-08-07T21:48:51.975Z
  */
-var Z=Object.create;var A=Object.defineProperty,ee=Object.defineProperties,te=Object.getOwnPropertyDescriptor,oe=Object.getOwnPropertyDescriptors,re=Object.getOwnPropertyNames,C=Object.getOwnPropertySymbols,se=Object.getPrototypeOf,_=Object.prototype.hasOwnProperty,ne=Object.prototype.propertyIsEnumerable;var M=(e,t,o)=>t in e?A(e,t,{enumerable:!0,configurable:!0,writable:!0,value:o}):e[t]=o,z=(e,t)=>{for(var o in t||(t={}))_.call(t,o)&&M(e,o,t[o]);if(C)for(var o of C(t))ne.call(t,o)&&M(e,o,t[o]);return e},O=(e,t)=>ee(e,oe(t));var ae=(e,t)=>{for(var o in t)A(e,o,{get:t[o],enumerable:!0})},H=(e,t,o,s)=>{if(t&&typeof t=="object"||typeof t=="function")for(let r of re(t))!_.call(e,r)&&r!==o&&A(e,r,{get:()=>t[r],enumerable:!(s=te(t,r))||s.enumerable});return e};var j=(e,t,o)=>(o=e!=null?Z(se(e)):{},H(t||!e||!e.__esModule?A(o,"default",{value:e,enumerable:!0}):o,e)),ie=e=>H(A({},"__esModule",{value:!0}),e);var f=(e,t,o)=>new Promise((s,r)=>{var c=i=>{try{a(o.next(i))}catch(l){r(l)}},n=i=>{try{a(o.throw(i))}catch(l){r(l)}},a=i=>i.done?s(i.value):Promise.resolve(i.value).then(c,n);a((o=o.apply(e,t)).next())});var ge={};ae(ge,{getStreams:()=>pe});module.exports=ie(ge);var ce="439c478a771f35c05022f9feabcca01c",le="Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36";function F(e,t){return f(this,null,function*(){var c;let r=`https://api.themoviedb.org/3/${t==="tv"||t==="series"?"tv":"movie"}/${e}?api_key=${ce}&append_to_response=translations`;console.log(`[dozaanimata] Requesting TMDB URL: ${r}`);try{let n=yield fetch(r,{headers:{"User-Agent":le}});if(!n.ok)return console.warn(`[dozaanimata] TMDB returned status ${n.status}`),null;let a=yield n.json(),i=null;if((c=a.translations)!=null&&c.translations){let p=a.translations.translations.find(u=>u.iso_639_1==="ro");p!=null&&p.data&&(i=p.data.name||p.data.title)}let l=a.name||a.title||"Unknown",d=a.first_air_date||a.release_date,m=d?parseInt(d.split("-")[0]):null;return console.log(`[dozaanimata] TMDB: Title="${l}", TitleRo="${i||"N/A"}", Year=${m}`),{title:l,titleRo:i||l,year:m}}catch(n){return console.error("[dozaanimata] TMDB Exception:",n.message),null}})}var x="https://www.dozaanimata.net",R="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",h={"User-Agent":R,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8","Accept-Language":"en-US,en;q=0.9","sec-ch-ua":'"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',"sec-ch-ua-mobile":"?0","sec-ch-ua-platform":'"Windows"',Referer:x+"/"};function L(e){return e?e.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s-]/g,"").trim().replace(/\s+/g,"-"):""}function w(o){return f(this,arguments,function*(e,t={}){try{let s=Object.assign({},h,t),r=yield fetch(e,{headers:s,skipSizeCheck:!0,cfKiller:!0});if((r.status===403||r.status===503)&&typeof globalThis.Cloudflare!="undefined"&&globalThis.Cloudflare.solve){console.log(`[dozaanimata] Solved Cloudflare for: ${e}`);let n=yield globalThis.Cloudflare.solve(e);n.Cookie&&(h.Cookie=n.Cookie),n["User-Agent"]&&(h["User-Agent"]=n["User-Agent"]);let a=Object.assign({},s,{Cookie:h.Cookie,"User-Agent":h["User-Agent"]});r=yield fetch(e,{headers:a,skipSizeCheck:!0,cfKiller:!0})}if(!r.ok)return null;let c=yield r.text();return c.includes("404 Not Found")||c.includes("nu a fost g\u0103sit\u0103")||c.includes("Page Not Found")?null:c}catch(s){return console.error(`[dozaanimata] Fetch error for ${e}:`,s.message),null}})}var J=j(require("cheerio-without-node-native"));var b=["dood.watch","doodstream.com","dood.to","dood.so","dood.cx","dood.la","dood.ws","dood.sh","doodstream.co","dood.pm","dood.wf","dood.re","dood.yt","dooood.com","dood.stream","ds2play.com","doods.pro","ds2video.com","d0o0d.com","do0od.com","d0000d.com","d000d.com","dood.li","dood.work","dooodster.com","vidply.com","all3do.com","do7go.com","doodcdn.io","doply.net","vide0.net","vvide0.com","d-s.io","dsvplay.com","myvidplay.com","playmogo.com"];function U(e){if(!e)return!1;let t=e.toLowerCase();return b.some(o=>t.includes(o))}function N(e){return f(this,null,function*(){try{let t=new URL(e),o=Object.assign({},h,{Referer:"https://www.dozaanimata.net/","Sec-Fetch-Dest":"iframe","Sec-Fetch-Mode":"navigate","Sec-Fetch-Site":"cross-site"}),s=yield w(e,o);if(!s)return null;let r=s.match(/\/pass_md5\/[^\s"'<>\\]+/);if(!r)return null;let c=r[0],n=`${t.origin}${c}`,a=yield fetch(n,{headers:Object.assign({},h,{Referer:e,"Sec-Fetch-Dest":"empty","Sec-Fetch-Mode":"cors","Sec-Fetch-Site":"same-origin"})});if(!a.ok)return null;let i=yield a.text(),l=Math.random().toString(36).substring(2,12),d=c.split("/").pop();return{rawUrl:`${i.trim()}${l}?token=${d}&expiry=${Date.now()}`,headers:{"User-Agent":R,Referer:`${t.origin}/`,Origin:t.origin}}}catch(t){console.error(`[dozaanimata] DoodStream error: ${t.message}`)}return null})}function W(e){return f(this,null,function*(){try{let t=yield w(e,{Referer:"https://dozaanimata.net/"});if(!t)return null;let o=t.match(/["']hls["']\s*:\s*["']([^"']+)["']/i);if(o)return o[1].replace(/\\/g,"");let s=t.match(/["']url1080["']\s*:\s*["']([^"']+)["']/i)||t.match(/["']url720["']\s*:\s*["']([^"']+)["']/i)||t.match(/["']url480["']\s*:\s*["']([^"']+)["']/i)||t.match(/["']url360["']\s*:\s*["']([^"']+)["']/i);if(s)return s[1].replace(/\\/g,"")}catch(t){}return null})}function B(e){if(!e||e.length===0)return e;let t=[],o={},s=256,r=e[0];t.push(r);for(let c=1;c<e.length;c++){let n=e[c],a=n.charCodeAt(0),i=a<256?n:o[a]!==void 0?o[a]:r+r[0];t.push(i),o[s]=r+i[0],s++,r=i}return t.join("")}function ue(e){let t=[],o=e.split(""),s=/^\d+$/.test(o[0])?parseInt(o.shift(),10):0;for(;s&&o.length>0;){let r=[];for(let c=0;c<s&&o.length!==0;c++)r.unshift(/^\d+$/.test(o[0])?parseInt(o.shift(),10):0);if(t.push(r),o.length===0)break;s=/^\d+$/.test(o[0])?parseInt(o.shift(),10):0}return t}function fe(e,t){let o=e;if(!t)return o;for(let s of t){s===1&&(o=o.split("").reverse().join(""));let r="";for(let c=0;c<o.length;c+=2)r+=String.fromCharCode(parseInt(o.substr(c,2),16));o=r,o=o.replace("dXRmOA==","")}return o}function q(e){return f(this,null,function*(){var t,o,s,r;try{let c=new URL(e),n=((o=(t=e.split("/e/")[1])==null?void 0:t.split("?")[0])==null?void 0:o.split("/")[0])||((r=(s=e.split("/d/")[1])==null?void 0:s.split("?")[0])==null?void 0:r.split("/")[0]);if(!n)return null;let a=`${c.origin}/e/${n}`,i=yield w(a,{Referer:a});if(!i)return null;let l=/[\.\s'](?:fc|_vvto\[[^\]]*)(?:['\]]*)?\s*[:=]\s*['"]([^'"]+)['"]/g,d=[],m;for(;(m=l.exec(i))!==null;)d.push(m[1]);for(let p of d.reverse()){let u=B(p);if(u!==p){let g=`${c.origin}/dl?op=player_api&cmd=gi&file_code=${n}&ch=${encodeURIComponent(u)}&ie=1`,S=yield(yield fetch(g,{headers:Object.assign({},h,{Referer:a,"X-Requested-With":"XMLHttpRequest"})})).text(),$=JSON.parse(S).file;if($&&$.file_status==="OK"&&$.dv&&$.dv[0]){let k=$.dv[0].s,D=B(k),y=ue(u)[0];return fe(D,y)}}}}catch(c){}return null})}function E(e){let t=e.replace(/-/g,"+").replace(/_/g,"/");for(;t.length%4;)t+="=";let o=atob(t),s=new Uint8Array(o.length);for(let r=0;r<o.length;r++)s[r]=o.charCodeAt(r);return s}function P(e){return f(this,null,function*(){try{let t=parseInt(e.version,10),o=t,s=31-t,r=e.key_parts[o-1],c=e.key_parts[s-1],n=E(r),a=E(c),i=new Uint8Array(n.length+a.length);i.set(n,0),i.set(a,n.length);let l=E(e.iv),d=E(e.payload),m=globalThis.crypto||typeof window!="undefined"&&window.crypto,p=yield m.subtle.importKey("raw",i,{name:"AES-GCM"},!1,["decrypt"]),u=yield m.subtle.decrypt({name:"AES-GCM",iv:l},p,d),g=new TextDecoder().decode(u),v=JSON.parse(g);if(v.sources&&v.sources.length>0){let S=v.sources[v.sources.length-1];return S.url||S.file}}catch(t){}return null})}function V(e){return f(this,null,function*(){try{let t=yield w(e);if(!t)return null;let o=t.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||t.match(/https?:\/\/[^"']+\.m3u8[^"']*/i);if(o)return o[1]||o[0]}catch(t){}return null})}var de="https://clicksud.com.in",he={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",Referer:`${de}/`,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"};function I(o){return f(this,arguments,function*(e,t={}){try{let s=yield fetch(e,{headers:z(z({},he),t)});if(!s.ok)throw new Error(`HTTP ${s.status}`);return yield s.text()}catch(s){return console.error(`[Clicksud] Fetch error for ${e}: ${s.message}`),null}})}function me(e){let t=new URL(e),o=t.pathname.match(/\/(?:embed-)?([a-zA-Z0-9]+)(?:\.html)?\/?$/);return o?`${t.origin}/embed-${o[1]}.html`:e}function K(e){let t=String(e||"").match(/(\d{3,4})/);return t?Number(t[1]):0}function G(e){return f(this,null,function*(){var t;try{let o=me(e),s=yield I(o,{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",Referer:o});if(!s)return null;let r=[],c=[/(?:file|src)\s*[:=,]?\s*["']([^"']+)["'][^}\]]*?\bres\s*[:=]\s*["']?([^"',}\]]+)/gi,/\bres\s*[:=]\s*["']?([^"',}\]]+)[^}\]]*?(?:file|src)\s*[:=,]?\s*["']([^"']+)["']/gi],n;for(;n=c[0].exec(s);)r.push({url:n[1],quality:K(n[2])});for(;n=c[1].exec(s);)r.push({url:n[2],quality:K(n[1])});if(!r.length){let i=s.match(/["'](https?:\/\/[^"']+\.(?:m3u8|mp4)[^"']*)["']/i);i&&r.push({url:i[1],quality:0})}return((t=r.map(i=>{let l=i.url.replace(/\\\//g,"/").replace(/&amp;/g,"&");return l.startsWith("//")?l=`https:${l}`:l.startsWith("/")&&(l=new URL(l,o).href),O(z({},i),{url:l})}).filter(i=>/^https?:\/\//i.test(i.url)).sort((i,l)=>l.quality-i.quality)[0])==null?void 0:t.url)||null}catch(o){return console.error(`[Vidoza] Resolution error: ${o.message}`),null}})}function X(e){return f(this,null,function*(){if(!e)return null;if((e.includes(".m3u8")||e.includes(".mp4"))&&!e.includes("/e/")&&!e.includes("/embed/")&&!e.includes("/v/"))return{rawUrl:e,headers:h};try{let t=new URL(e),o=null;if(U(e))o=yield N(e);else if(e.includes("vk.com")||e.includes("vkvideo.ru")){let r=yield W(e);r&&(o={rawUrl:r,headers:{"User-Agent":R,Referer:"https://dozaanimata.net/"}})}else if(e.includes("veev.to")||e.includes("voe")||e.includes("poophq")){let r=yield q(e);r&&(o={rawUrl:r,headers:h})}else if(e.includes("ghbrisk")||e.includes("streamwish")||e.includes("filelions")||e.includes("streamhg")){let r=yield V(e);r&&(o={rawUrl:r,headers:h})}else if(e.includes("vidoza.net")||e.includes("vidoza.co")||e.includes("videzz.net")){let r=yield G(e);r&&(o={rawUrl:r,headers:{"User-Agent":R,Referer:`${t.origin}/`}})}let s=e.includes("/e/")?e.split("/e/")[1].split("?")[0].split("/")[0]:null;if(!o&&s)try{let r=`${t.origin}/api/videos/${s}`,c=yield fetch(r,{headers:Object.assign({},h,{Referer:e,Origin:t.origin})});if(c.ok){let n=yield c.json();if(n!=null&&n.playback){let a=yield P(n.playback);a&&(o={rawUrl:a,headers:{"User-Agent":R,Referer:`${t.origin}/`}})}}}catch(r){}return o}catch(t){console.error(`[dozaanimata] Master resolution error: ${t.message}`)}return null})}function Y(e){return f(this,null,function*(){if(!e)return[];let t=J.default.load(e),o=new Set,s=n=>{if(!n||typeof n!="string"||!n.startsWith("http://")&&!n.startsWith("https://"))return!1;let a=n.toLowerCase();return!(a.includes("youtube.com")||a.includes("youtu.be")||a.includes("wp-")||a.endsWith(".js")||a.includes("popads"))};t("iframe, embed, object").each((n,a)=>{let i=t(a).attr("src")||t(a).attr("data-src")||t(a).attr("data-lazy-src");i&&(i.startsWith("//")&&(i="https:"+i),s(i)&&o.add(i))});let r=["ok.ru","filemoon","streamtape","vk.com","vkvideo.ru","vidoza","videzz","voe","streamwish"].concat(b);return(e.match(/https?:\/\/[^\s"'<>\\]+/gi)||[]).forEach(n=>{let a=n.toLowerCase();r.some(i=>a.includes(i))&&s(n)&&o.add(n.replace(/['"\\>].*$/,""))}),Array.from(o)})}function T(e,t,o,s,r,c){let n="Server",a=(t||"").toLowerCase();U(t)?a.includes("playmogo")?n="PlayMogo":n="DoodStream":a.includes("ok.ru")?n="OK.ru":a.includes("filemoon")?n="FileMoon":a.includes("vk.com")||a.includes("vkvideo.ru")?n="VK Video":a.includes("streamtape")?n="StreamTape":(a.includes("vidoza")||a.includes("videzz"))&&(n="Vidoza");let l=(c==="tv"||c==="series")&&s&&r?`${o} S${s}E${r}`:o,d=typeof e=="string"?e:e==null?void 0:e.rawUrl,m=d&&d.includes(".m3u8");return{name:`DozaAnimata - ${n}`,title:l,url:d,quality:m?"Auto":"1080p HD",headers:(e==null?void 0:e.headers)||h}}var Q=j(require("cheerio-without-node-native"));function pe(e,t,o,s){return f(this,null,function*(){console.log(`[dozaanimata] getStreams started: ID=${e}, type=${t}, S=${o}, E=${s}`);try{let r=yield F(e,t);if(!r)return[];let c=t==="tv"||t==="series",n=Array.from(new Set([r.title,r.titleRo].filter(Boolean))),a=null,i=r.title,l=[],d=n.map(u=>L(u)).filter(Boolean);if(c&&o&&s)for(let u of d)l.push(`${u}-sezonul-${o}-episodul-${s}-online-in-romana`),l.push(`${u}-sezonul-${o}-episodul-${s}`);else{if(r.year)for(let u of d)l.push(`${u}-${r.year}-online-in-romana`);for(let u of d)l.push(`${u}-online-in-romana`);for(let u of d)l.push(`${u}`)}for(let u of l){let g=`${x}/${u}/`;console.log(`[dozaanimata] Checking direct slug URL: ${g}`);let v=yield w(g);if(v){console.log(`[dozaanimata] Direct URL matched: ${g}`),a=v;break}}if(!a)for(let u of n){let g=`${x}/?s=${encodeURIComponent(u)}`,v=yield w(g);if(v){let S=Q.default.load(v),$=[];if(S("a[href]").each((k,D)=>{let y=S(D).attr("href");!y||y.includes("wp-")||y.includes("/category/")||y.includes("/tag/")||y===x+"/"||(c&&o&&s?new RegExp(`sezonul-${o}-episodul-${s}(?:-|\\/|$)`,"i").test(y)&&$.push(y):y.startsWith(x)&&y.includes("-online-in-romana")&&$.push(y))}),$.length>0){let k=$[0];if(a=yield w(k),a){i=u;break}}}}if(!a)return console.log("[dozaanimata] Could not find media page."),[];let m=yield Y(a);console.log(`[dozaanimata] Discovered ${m.length} stream embed(s)`);let p=[];for(let u of m){console.log(`[dozaanimata] Resolving raw stream for embed: ${u}`);let g=yield X(u);g&&g.rawUrl?(console.log(`[dozaanimata] Successfully resolved raw stream: ${g.rawUrl}`),p.push(T(g,u,i,o,s,t))):(console.log(`[dozaanimata] Falling back to embed URL for ${u}`),p.push(T({rawUrl:u},u,i,o,s,t)))}return p}catch(r){return console.error("[dozaanimata] Error:",r.message),[]}})}
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/dozaanimata/index.js
+var dozaanimata_exports = {};
+__export(dozaanimata_exports, {
+  getStreams: () => getStreams
+});
+module.exports = __toCommonJS(dozaanimata_exports);
+
+// src/dozaanimata/tmdb.js
+var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36";
+function fetchTmdbDetails(tmdbId, mediaType) {
+  return __async(this, null, function* () {
+    var _a;
+    const isTv = mediaType === "tv" || mediaType === "series";
+    const primaryEndpoint = isTv ? "tv" : "movie";
+    const url = `https://api.themoviedb.org/3/${primaryEndpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=translations`;
+    console.log(`[dozaanimata] Requesting TMDB URL: ${url}`);
+    try {
+      const res = yield fetch(url, { headers: { "User-Agent": USER_AGENT } });
+      if (!res.ok) {
+        console.warn(`[dozaanimata] TMDB returned status ${res.status}`);
+        return null;
+      }
+      const data = yield res.json();
+      let titleRo = null;
+      if ((_a = data.translations) == null ? void 0 : _a.translations) {
+        const roTrans = data.translations.translations.find(
+          (t) => t.iso_639_1 === "ro"
+        );
+        if (roTrans == null ? void 0 : roTrans.data) {
+          titleRo = roTrans.data.name || roTrans.data.title;
+        }
+      }
+      const primaryTitle = data.name || data.title || "Unknown";
+      const releaseDate = data.first_air_date || data.release_date;
+      const year = releaseDate ? parseInt(releaseDate.split("-")[0]) : null;
+      console.log(
+        `[dozaanimata] TMDB: Title="${primaryTitle}", TitleRo="${titleRo || "N/A"}", Year=${year}`
+      );
+      return {
+        title: primaryTitle,
+        titleRo: titleRo || primaryTitle,
+        year
+      };
+    } catch (e) {
+      console.error("[dozaanimata] TMDB Exception:", e.message);
+      return null;
+    }
+  });
+}
+
+// src/dozaanimata/constants.js
+var BASE_URL = "https://www.dozaanimata.net";
+var USER_AGENT2 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+var HEADERS = {
+  "User-Agent": USER_AGENT2,
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+  "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+  "sec-ch-ua-mobile": "?0",
+  "sec-ch-ua-platform": '"Windows"',
+  Referer: BASE_URL + "/"
+};
+function slugify(text) {
+  if (!text)
+    return "";
+  return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+}
+
+// src/dozaanimata/http.js
+function fetchHtml(_0) {
+  return __async(this, arguments, function* (url, customHeaders = {}) {
+    try {
+      const mergedHeaders = Object.assign({}, HEADERS, customHeaders);
+      let response = yield fetch(url, {
+        headers: mergedHeaders,
+        skipSizeCheck: true,
+        cfKiller: true
+      });
+      if ((response.status === 403 || response.status === 503) && typeof globalThis.Cloudflare !== "undefined" && globalThis.Cloudflare.solve) {
+        console.log(`[dozaanimata] Solved Cloudflare for: ${url}`);
+        const solvedHeaders = yield globalThis.Cloudflare.solve(url);
+        if (solvedHeaders["Cookie"])
+          HEADERS["Cookie"] = solvedHeaders["Cookie"];
+        if (solvedHeaders["User-Agent"])
+          HEADERS["User-Agent"] = solvedHeaders["User-Agent"];
+        const retryHeaders = Object.assign({}, mergedHeaders, {
+          Cookie: HEADERS["Cookie"],
+          "User-Agent": HEADERS["User-Agent"]
+        });
+        response = yield fetch(url, {
+          headers: retryHeaders,
+          skipSizeCheck: true,
+          cfKiller: true
+        });
+      }
+      if (!response.ok)
+        return null;
+      const text = yield response.text();
+      if (text.includes("404 Not Found") || text.includes("nu a fost g\u0103sit\u0103") || text.includes("Page Not Found")) {
+        return null;
+      }
+      return text;
+    } catch (e) {
+      console.error(`[dozaanimata] Fetch error for ${url}:`, e.message);
+      return null;
+    }
+  });
+}
+
+// src/dozaanimata/extractors/index.js
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+
+// src/dozaanimata/extractors/dood.js
+var DOOD_DOMAINS = [
+  "dood.watch",
+  "doodstream.com",
+  "dood.to",
+  "dood.so",
+  "dood.cx",
+  "dood.la",
+  "dood.ws",
+  "dood.sh",
+  "doodstream.co",
+  "dood.pm",
+  "dood.wf",
+  "dood.re",
+  "dood.yt",
+  "dooood.com",
+  "dood.stream",
+  "ds2play.com",
+  "doods.pro",
+  "ds2video.com",
+  "d0o0d.com",
+  "do0od.com",
+  "d0000d.com",
+  "d000d.com",
+  "dood.li",
+  "dood.work",
+  "dooodster.com",
+  "vidply.com",
+  "all3do.com",
+  "do7go.com",
+  "doodcdn.io",
+  "doply.net",
+  "vide0.net",
+  "vvide0.com",
+  "d-s.io",
+  "dsvplay.com",
+  "myvidplay.com",
+  "playmogo.com"
+];
+function isDoodDomain(url) {
+  if (!url)
+    return false;
+  const lower = url.toLowerCase();
+  return DOOD_DOMAINS.some((domain) => lower.includes(domain));
+}
+function resolveDood(embedUrl) {
+  return __async(this, null, function* () {
+    try {
+      const urlObj = new URL(embedUrl);
+      const customHeaders = Object.assign({}, HEADERS, {
+        Referer: "https://www.dozaanimata.net/",
+        "Sec-Fetch-Dest": "iframe",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "cross-site"
+      });
+      const html = yield fetchHtml(embedUrl, customHeaders);
+      if (!html)
+        return null;
+      const passMatch = html.match(/\/pass_md5\/[^\s"'<>\\]+/);
+      if (!passMatch)
+        return null;
+      const passPath = passMatch[0];
+      const passUrl = `${urlObj.origin}${passPath}`;
+      const passRes = yield fetch(passUrl, {
+        headers: Object.assign({}, HEADERS, {
+          Referer: embedUrl,
+          "Sec-Fetch-Dest": "empty",
+          "Sec-Fetch-Mode": "cors",
+          "Sec-Fetch-Site": "same-origin"
+        })
+      });
+      if (!passRes.ok)
+        return null;
+      const passText = yield passRes.text();
+      const randStr = Math.random().toString(36).substring(2, 12);
+      const token = passPath.split("/").pop();
+      const rawVideoUrl = `${passText.trim()}${randStr}?token=${token}&expiry=${Date.now()}`;
+      return {
+        rawUrl: rawVideoUrl,
+        headers: {
+          "User-Agent": USER_AGENT2,
+          Referer: `${urlObj.origin}/`,
+          Origin: urlObj.origin
+        }
+      };
+    } catch (e) {
+      console.error(`[dozaanimata] DoodStream error: ${e.message}`);
+    }
+    return null;
+  });
+}
+
+// src/dozaanimata/extractors/vk.js
+function resolveVk(embedUrl) {
+  return __async(this, null, function* () {
+    try {
+      const html = yield fetchHtml(embedUrl, {
+        Referer: "https://dozaanimata.net/"
+      });
+      if (!html)
+        return null;
+      const hlsMatch = html.match(/["']hls["']\s*:\s*["']([^"']+)["']/i);
+      if (hlsMatch)
+        return hlsMatch[1].replace(/\\/g, "");
+      const mp4Match = html.match(/["']url1080["']\s*:\s*["']([^"']+)["']/i) || html.match(/["']url720["']\s*:\s*["']([^"']+)["']/i) || html.match(/["']url480["']\s*:\s*["']([^"']+)["']/i) || html.match(/["']url360["']\s*:\s*["']([^"']+)["']/i);
+      if (mp4Match)
+        return mp4Match[1].replace(/\\/g, "");
+    } catch (e) {
+    }
+    return null;
+  });
+}
+
+// src/dozaanimata/extractors/veev.js
+function veevDecode(etext) {
+  if (!etext || etext.length === 0)
+    return etext;
+  let result = [];
+  let lut = {};
+  let n = 256;
+  let c = etext[0];
+  result.push(c);
+  for (let i = 1; i < etext.length; i++) {
+    let char = etext[i];
+    let code = char.charCodeAt(0);
+    let nc = code < 256 ? char : lut[code] !== void 0 ? lut[code] : c + c[0];
+    result.push(nc);
+    lut[n] = c + nc[0];
+    n++;
+    c = nc;
+  }
+  return result.join("");
+}
+function buildArray(encodedString) {
+  let d = [];
+  let c = encodedString.split("");
+  let count = /^\d+$/.test(c[0]) ? parseInt(c.shift(), 10) : 0;
+  while (count && c.length > 0) {
+    let currentArray = [];
+    for (let i = 0; i < count; i++) {
+      if (c.length === 0)
+        break;
+      currentArray.unshift(/^\d+$/.test(c[0]) ? parseInt(c.shift(), 10) : 0);
+    }
+    d.push(currentArray);
+    if (c.length === 0)
+      break;
+    count = /^\d+$/.test(c[0]) ? parseInt(c.shift(), 10) : 0;
+  }
+  return d;
+}
+function decodeVeevUrl(etext, tarray) {
+  let ds = etext;
+  if (!tarray)
+    return ds;
+  for (let t of tarray) {
+    if (t === 1)
+      ds = ds.split("").reverse().join("");
+    let hex = "";
+    for (let i = 0; i < ds.length; i += 2) {
+      hex += String.fromCharCode(parseInt(ds.substr(i, 2), 16));
+    }
+    ds = hex;
+    ds = ds.replace("dXRmOA==", "");
+  }
+  return ds;
+}
+function resolveVeev(embedUrl) {
+  return __async(this, null, function* () {
+    var _a, _b, _c, _d;
+    try {
+      const urlObj = new URL(embedUrl);
+      const mediaId = ((_b = (_a = embedUrl.split("/e/")[1]) == null ? void 0 : _a.split("?")[0]) == null ? void 0 : _b.split("/")[0]) || ((_d = (_c = embedUrl.split("/d/")[1]) == null ? void 0 : _c.split("?")[0]) == null ? void 0 : _d.split("/")[0]);
+      if (!mediaId)
+        return null;
+      const webUrl = `${urlObj.origin}/e/${mediaId}`;
+      const html = yield fetchHtml(webUrl, { Referer: webUrl });
+      if (!html)
+        return null;
+      const regex = /[\.\s'](?:fc|_vvto\[[^\]]*)(?:['\]]*)?\s*[:=]\s*['"]([^'"]+)['"]/g;
+      let matches = [];
+      let match;
+      while ((match = regex.exec(html)) !== null) {
+        matches.push(match[1]);
+      }
+      for (let f of matches.reverse()) {
+        const ch = veevDecode(f);
+        if (ch !== f) {
+          const apiUrl = `${urlObj.origin}/dl?op=player_api&cmd=gi&file_code=${mediaId}&ch=${encodeURIComponent(ch)}&ie=1`;
+          const apiRes = yield fetch(apiUrl, {
+            headers: Object.assign({}, HEADERS, {
+              Referer: webUrl,
+              "X-Requested-With": "XMLHttpRequest"
+            })
+          });
+          const jsonText = yield apiRes.text();
+          const jresp = JSON.parse(jsonText).file;
+          if (jresp && jresp.file_status === "OK" && jresp.dv && jresp.dv[0]) {
+            const rawS = jresp.dv[0].s;
+            const decompressedS = veevDecode(rawS);
+            const tarray = buildArray(ch)[0];
+            return decodeVeevUrl(decompressedS, tarray);
+          }
+        }
+      }
+    } catch (e) {
+    }
+    return null;
+  });
+}
+
+// src/dozaanimata/extractors/filemoon.js
+function base64UrlToBytes(str) {
+  let b64 = str.replace(/-/g, "+").replace(/_/g, "/");
+  while (b64.length % 4)
+    b64 += "=";
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++)
+    bytes[i] = binary.charCodeAt(i);
+  return bytes;
+}
+function decryptFilemoonApi(playback) {
+  return __async(this, null, function* () {
+    try {
+      const versionNum = parseInt(playback.version, 10);
+      const idx1 = versionNum;
+      const idx2 = 31 - versionNum;
+      const keyPart1 = playback.key_parts[idx1 - 1];
+      const keyPart2 = playback.key_parts[idx2 - 1];
+      const b1 = base64UrlToBytes(keyPart1);
+      const b2 = base64UrlToBytes(keyPart2);
+      const keyBytes = new Uint8Array(b1.length + b2.length);
+      keyBytes.set(b1, 0);
+      keyBytes.set(b2, b1.length);
+      const ivBytes = base64UrlToBytes(playback.iv);
+      const payloadBytes = base64UrlToBytes(playback.payload);
+      const cryptoObj = globalThis.crypto || typeof window !== "undefined" && window.crypto;
+      const cryptoKey = yield cryptoObj.subtle.importKey(
+        "raw",
+        keyBytes,
+        { name: "AES-GCM" },
+        false,
+        ["decrypt"]
+      );
+      const decryptedBuffer = yield cryptoObj.subtle.decrypt(
+        { name: "AES-GCM", iv: ivBytes },
+        cryptoKey,
+        payloadBytes
+      );
+      const jsonStr = new TextDecoder().decode(decryptedBuffer);
+      const data = JSON.parse(jsonStr);
+      if (data.sources && data.sources.length > 0) {
+        const best = data.sources[data.sources.length - 1];
+        return best.url || best.file;
+      }
+    } catch (e) {
+    }
+    return null;
+  });
+}
+
+// src/dozaanimata/extractors/streamwish.js
+function resolveStreamWish(embedUrl) {
+  return __async(this, null, function* () {
+    try {
+      const html = yield fetchHtml(embedUrl);
+      if (!html)
+        return null;
+      const m3u8Match = html.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i) || html.match(/https?:\/\/[^"']+\.m3u8[^"']*/i);
+      if (m3u8Match)
+        return m3u8Match[1] || m3u8Match[0];
+    } catch (e) {
+    }
+    return null;
+  });
+}
+
+// src/clicksud/http.js
+var BASE_URL2 = "https://clicksud.com.in";
+var HEADERS2 = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",
+  Referer: `${BASE_URL2}/`,
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"
+};
+function fetchText(_0) {
+  return __async(this, arguments, function* (url, customHeaders = {}) {
+    try {
+      const response = yield fetch(url, {
+        headers: __spreadValues(__spreadValues({}, HEADERS2), customHeaders)
+      });
+      if (!response.ok)
+        throw new Error(`HTTP ${response.status}`);
+      return yield response.text();
+    } catch (e) {
+      console.error(`[Clicksud] Fetch error for ${url}: ${e.message}`);
+      return null;
+    }
+  });
+}
+
+// src/clicksud/resolvers/vidoza.js
+function normalizeEmbedUrl(input) {
+  const url = new URL(input);
+  const match = url.pathname.match(
+    /\/(?:embed-)?([a-zA-Z0-9]+)(?:\.html)?\/?$/
+  );
+  if (!match)
+    return input;
+  return `${url.origin}/embed-${match[1]}.html`;
+}
+function parseQuality(value) {
+  const match = String(value || "").match(/(\d{3,4})/);
+  return match ? Number(match[1]) : 0;
+}
+function resolveVidoza(embedUrl) {
+  return __async(this, null, function* () {
+    var _a;
+    try {
+      const normalizedUrl = normalizeEmbedUrl(embedUrl);
+      const html = yield fetchText(normalizedUrl, {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",
+        Referer: normalizedUrl
+      });
+      if (!html)
+        return null;
+      const sources = [];
+      const patterns = [
+        /(?:file|src)\s*[:=,]?\s*["']([^"']+)["'][^}\]]*?\bres\s*[:=]\s*["']?([^"',}\]]+)/gi,
+        /\bres\s*[:=]\s*["']?([^"',}\]]+)[^}\]]*?(?:file|src)\s*[:=,]?\s*["']([^"']+)["']/gi
+      ];
+      let match;
+      while (match = patterns[0].exec(html)) {
+        sources.push({ url: match[1], quality: parseQuality(match[2]) });
+      }
+      while (match = patterns[1].exec(html)) {
+        sources.push({ url: match[2], quality: parseQuality(match[1]) });
+      }
+      if (!sources.length) {
+        const direct = html.match(
+          /["'](https?:\/\/[^"']+\.(?:m3u8|mp4)[^"']*)["']/i
+        );
+        if (direct)
+          sources.push({ url: direct[1], quality: 0 });
+      }
+      const playable = sources.map((source) => {
+        let url = source.url.replace(/\\\//g, "/").replace(/&amp;/g, "&");
+        if (url.startsWith("//"))
+          url = `https:${url}`;
+        else if (url.startsWith("/"))
+          url = new URL(url, normalizedUrl).href;
+        return __spreadProps(__spreadValues({}, source), { url });
+      }).filter((source) => /^https?:\/\//i.test(source.url)).sort((left, right) => right.quality - left.quality);
+      return ((_a = playable[0]) == null ? void 0 : _a.url) || null;
+    } catch (error) {
+      console.error(`[Vidoza] Resolution error: ${error.message}`);
+      return null;
+    }
+  });
+}
+
+// src/dozaanimata/extractors/index.js
+function resolveEmbedToRawStream(embedUrl) {
+  return __async(this, null, function* () {
+    if (!embedUrl)
+      return null;
+    if ((embedUrl.includes(".m3u8") || embedUrl.includes(".mp4")) && !embedUrl.includes("/e/") && !embedUrl.includes("/embed/") && !embedUrl.includes("/v/")) {
+      return { rawUrl: embedUrl, headers: HEADERS };
+    }
+    try {
+      const urlObj = new URL(embedUrl);
+      let rawResult = null;
+      if (isDoodDomain(embedUrl)) {
+        rawResult = yield resolveDood(embedUrl);
+      } else if (embedUrl.includes("vk.com") || embedUrl.includes("vkvideo.ru")) {
+        const rawUrl = yield resolveVk(embedUrl);
+        if (rawUrl)
+          rawResult = {
+            rawUrl,
+            headers: {
+              "User-Agent": USER_AGENT2,
+              Referer: "https://dozaanimata.net/"
+            }
+          };
+      } else if (embedUrl.includes("veev.to") || embedUrl.includes("voe") || embedUrl.includes("poophq")) {
+        const rawUrl = yield resolveVeev(embedUrl);
+        if (rawUrl)
+          rawResult = { rawUrl, headers: HEADERS };
+      } else if (embedUrl.includes("ghbrisk") || embedUrl.includes("streamwish") || embedUrl.includes("filelions") || embedUrl.includes("streamhg")) {
+        const rawUrl = yield resolveStreamWish(embedUrl);
+        if (rawUrl)
+          rawResult = { rawUrl, headers: HEADERS };
+      } else if (embedUrl.includes("vidoza.net") || embedUrl.includes("vidoza.co") || embedUrl.includes("videzz.net")) {
+        const rawUrl = yield resolveVidoza(embedUrl);
+        if (rawUrl) {
+          rawResult = {
+            rawUrl,
+            headers: {
+              "User-Agent": USER_AGENT2,
+              Referer: `${urlObj.origin}/`
+            }
+          };
+        }
+      }
+      let code = embedUrl.includes("/e/") ? embedUrl.split("/e/")[1].split("?")[0].split("/")[0] : null;
+      if (!rawResult && code) {
+        try {
+          const apiUrl = `${urlObj.origin}/api/videos/${code}`;
+          const apiRes = yield fetch(apiUrl, {
+            headers: Object.assign({}, HEADERS, {
+              Referer: embedUrl,
+              Origin: urlObj.origin
+            })
+          });
+          if (apiRes.ok) {
+            const json = yield apiRes.json();
+            if (json == null ? void 0 : json.playback) {
+              const rawUrl = yield decryptFilemoonApi(json.playback);
+              if (rawUrl)
+                rawResult = {
+                  rawUrl,
+                  headers: {
+                    "User-Agent": USER_AGENT2,
+                    Referer: `${urlObj.origin}/`
+                  }
+                };
+            }
+          }
+        } catch (e) {
+        }
+      }
+      return rawResult;
+    } catch (e) {
+      console.error(`[dozaanimata] Master resolution error: ${e.message}`);
+    }
+    return null;
+  });
+}
+function extractEmbedsFromPage(html) {
+  return __async(this, null, function* () {
+    if (!html)
+      return [];
+    const $ = import_cheerio_without_node_native.default.load(html);
+    const embedUrls = /* @__PURE__ */ new Set();
+    const isPlayableEmbed = (url) => {
+      if (!url || typeof url !== "string")
+        return false;
+      if (!url.startsWith("http://") && !url.startsWith("https://"))
+        return false;
+      const lower = url.toLowerCase();
+      if (lower.includes("youtube.com") || lower.includes("youtu.be") || lower.includes("wp-") || lower.endsWith(".js") || lower.includes("popads"))
+        return false;
+      return true;
+    };
+    $("iframe, embed, object").each((_, el) => {
+      let src = $(el).attr("src") || $(el).attr("data-src") || $(el).attr("data-lazy-src");
+      if (src) {
+        if (src.startsWith("//"))
+          src = "https:" + src;
+        if (isPlayableEmbed(src))
+          embedUrls.add(src);
+      }
+    });
+    const knownHosts = [
+      "ok.ru",
+      "filemoon",
+      "streamtape",
+      "vk.com",
+      "vkvideo.ru",
+      "vidoza",
+      "videzz",
+      "voe",
+      "streamwish"
+    ].concat(DOOD_DOMAINS);
+    const rawUrls = html.match(/https?:\/\/[^\s"'<>\\]+/gi) || [];
+    rawUrls.forEach((url) => {
+      const lower = url.toLowerCase();
+      if (knownHosts.some((host) => lower.includes(host)) && isPlayableEmbed(url)) {
+        embedUrls.add(url.replace(/['"\\>].*$/, ""));
+      }
+    });
+    return Array.from(embedUrls);
+  });
+}
+function buildStreamObject(rawStream, embedUrl, showTitle, season, episode, mediaType) {
+  let serverName = "Server";
+  const lower = (embedUrl || "").toLowerCase();
+  if (isDoodDomain(embedUrl)) {
+    if (lower.includes("playmogo"))
+      serverName = "PlayMogo";
+    else
+      serverName = "DoodStream";
+  } else if (lower.includes("ok.ru"))
+    serverName = "OK.ru";
+  else if (lower.includes("filemoon"))
+    serverName = "FileMoon";
+  else if (lower.includes("vk.com") || lower.includes("vkvideo.ru"))
+    serverName = "VK Video";
+  else if (lower.includes("streamtape"))
+    serverName = "StreamTape";
+  else if (lower.includes("vidoza") || lower.includes("videzz"))
+    serverName = "Vidoza";
+  const isTv = mediaType === "tv" || mediaType === "series";
+  const displayTitle = isTv && season && episode ? `${showTitle} S${season}E${episode}` : showTitle;
+  const rawUrl = typeof rawStream === "string" ? rawStream : rawStream == null ? void 0 : rawStream.rawUrl;
+  const isM3u8 = rawUrl && rawUrl.includes(".m3u8");
+  return {
+    name: `DozaAnimata - ${serverName}`,
+    title: displayTitle,
+    url: rawUrl,
+    quality: isM3u8 ? "Auto" : "1080p",
+    language: "ro",
+    headers: (rawStream == null ? void 0 : rawStream.headers) || HEADERS
+  };
+}
+
+// src/dozaanimata/index.js
+var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
+function getStreams(tmdbId, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    console.log(
+      `[dozaanimata] getStreams started: ID=${tmdbId}, type=${mediaType}, S=${season}, E=${episode}`
+    );
+    try {
+      const tmdbData = yield fetchTmdbDetails(tmdbId, mediaType);
+      if (!tmdbData)
+        return [];
+      const isTv = mediaType === "tv" || mediaType === "series";
+      const titlesToTry = Array.from(
+        new Set([tmdbData.title, tmdbData.titleRo].filter(Boolean))
+      );
+      let pageHtml = null;
+      let matchedTitle = tmdbData.title;
+      const slugCandidates = [];
+      const baseSlugs = titlesToTry.map((t) => slugify(t)).filter(Boolean);
+      if (isTv && season && episode) {
+        for (const slug of baseSlugs) {
+          slugCandidates.push(
+            `${slug}-sezonul-${season}-episodul-${episode}-online-in-romana`
+          );
+          slugCandidates.push(`${slug}-sezonul-${season}-episodul-${episode}`);
+        }
+      } else {
+        if (tmdbData.year) {
+          for (const slug of baseSlugs) {
+            slugCandidates.push(`${slug}-${tmdbData.year}-online-in-romana`);
+          }
+        }
+        for (const slug of baseSlugs) {
+          slugCandidates.push(`${slug}-online-in-romana`);
+        }
+        for (const slug of baseSlugs) {
+          slugCandidates.push(`${slug}`);
+        }
+      }
+      for (const slug of slugCandidates) {
+        const candidateUrl = `${BASE_URL}/${slug}/`;
+        console.log(`[dozaanimata] Checking direct slug URL: ${candidateUrl}`);
+        const html = yield fetchHtml(candidateUrl);
+        if (html) {
+          console.log(`[dozaanimata] Direct URL matched: ${candidateUrl}`);
+          pageHtml = html;
+          break;
+        }
+      }
+      if (!pageHtml) {
+        for (const title of titlesToTry) {
+          const searchUrl = `${BASE_URL}/?s=${encodeURIComponent(title)}`;
+          const searchHtml = yield fetchHtml(searchUrl);
+          if (searchHtml) {
+            const $ = import_cheerio_without_node_native2.default.load(searchHtml);
+            const searchResults = [];
+            $("a[href]").each((_, el) => {
+              const href = $(el).attr("href");
+              if (!href || href.includes("wp-") || href.includes("/category/") || href.includes("/tag/") || href === BASE_URL + "/")
+                return;
+              if (isTv && season && episode) {
+                const epRegex = new RegExp(
+                  `sezonul-${season}-episodul-${episode}(?:-|\\/|$)`,
+                  "i"
+                );
+                if (epRegex.test(href))
+                  searchResults.push(href);
+              } else {
+                if (href.startsWith(BASE_URL) && href.includes("-online-in-romana")) {
+                  searchResults.push(href);
+                }
+              }
+            });
+            if (searchResults.length > 0) {
+              const targetUrl = searchResults[0];
+              pageHtml = yield fetchHtml(targetUrl);
+              if (pageHtml) {
+                matchedTitle = title;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (!pageHtml) {
+        console.log("[dozaanimata] Could not find media page.");
+        return [];
+      }
+      const embedUrls = yield extractEmbedsFromPage(pageHtml);
+      console.log(`[dozaanimata] Discovered ${embedUrls.length} stream embed(s)`);
+      const finalStreams = [];
+      for (const embedUrl of embedUrls) {
+        console.log(`[dozaanimata] Resolving raw stream for embed: ${embedUrl}`);
+        const rawStream = yield resolveEmbedToRawStream(embedUrl);
+        if (rawStream && rawStream.rawUrl) {
+          console.log(
+            `[dozaanimata] Successfully resolved raw stream: ${rawStream.rawUrl}`
+          );
+          finalStreams.push(
+            buildStreamObject(
+              rawStream,
+              embedUrl,
+              matchedTitle,
+              season,
+              episode,
+              mediaType
+            )
+          );
+        } else {
+          console.log(`[dozaanimata] Falling back to embed URL for ${embedUrl}`);
+          finalStreams.push(
+            buildStreamObject(
+              { rawUrl: embedUrl },
+              embedUrl,
+              matchedTitle,
+              season,
+              episode,
+              mediaType
+            )
+          );
+        }
+      }
+      return finalStreams;
+    } catch (error) {
+      console.error("[dozaanimata] Error:", error.message);
+      return [];
+    }
+  });
+}

@@ -1,7 +1,6 @@
-
 /**
  * filmehd - Built from src/filmehd/
- * Generated: 2026-08-02T19:46:07.096Z
+ * Generated: 2026-08-07T21:48:51.984Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -386,7 +385,8 @@ function extractStreams(pageUrl, metadata, mediaType, season, episode) {
       name: `FilmeHD - ${item.host}`,
       title: mediaType === "tv" ? `${metadata.title} S${season}E${episode} \xB7 ${item.host}` : `${metadata.title} \xB7 ${item.host}`,
       url: item.url,
-      quality: /\.m3u8(?:$|[?#])/i.test(item.url) ? "1080p HD" : "HD",
+      quality: /\.m3u8(?:$|[?#])/i.test(item.url) ? "1080p" : "Unknown",
+      language: "ro",
       type: streamType(item.url),
       headers: item.headers
     }));
@@ -424,4 +424,3 @@ function getStreams(tmdbId, mediaType, season, episode) {
   });
 }
 module.exports = { getStreams };
-

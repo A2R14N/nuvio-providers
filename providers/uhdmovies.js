@@ -1,6 +1,6 @@
 /**
  * uhdmovies - Built from src/uhdmovies/
- * Generated: 2026-07-30T20:53:16.451Z
+ * Generated: 2026-08-07T21:48:52.004Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -287,6 +287,7 @@ function resolveRelease(release) {
         title: `UHDMovies - ${details}`,
         url: streamUrl,
         quality: release.quality,
+        language: "hi \u2022 en",
         type: "video/x-matroska",
         headers: {
           "User-Agent": USER_AGENT,

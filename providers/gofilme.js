@@ -1,5 +1,503 @@
 /**
  * gofilme - Built from src/gofilme/
- * Generated: 2026-07-29T16:37:52.305Z
+ * Generated: 2026-08-07T21:48:51.991Z
  */
-var D=Object.create;var v=Object.defineProperty,V=Object.defineProperties,O=Object.getOwnPropertyDescriptor,j=Object.getOwnPropertyDescriptors,T=Object.getOwnPropertyNames,S=Object.getOwnPropertySymbols,L=Object.getPrototypeOf,G=Object.prototype.hasOwnProperty,b=Object.prototype.propertyIsEnumerable;var E=(r,t,e)=>t in r?v(r,t,{enumerable:!0,configurable:!0,writable:!0,value:e}):r[t]=e,w=(r,t)=>{for(var e in t||(t={}))G.call(t,e)&&E(r,e,t[e]);if(S)for(var e of S(t))b.call(t,e)&&E(r,e,t[e]);return r},A=(r,t)=>V(r,j(t));var z=(r,t)=>{for(var e in t)v(r,e,{get:t[e],enumerable:!0})},U=(r,t,e,s)=>{if(t&&typeof t=="object"||typeof t=="function")for(let o of T(t))!G.call(r,o)&&o!==e&&v(r,o,{get:()=>t[o],enumerable:!(s=O(t,o))||s.enumerable});return r};var W=(r,t,e)=>(e=r!=null?D(L(r)):{},U(t||!r||!r.__esModule?v(e,"default",{value:r,enumerable:!0}):e,r)),k=r=>U(v({},"__esModule",{value:!0}),r);var f=(r,t,e)=>new Promise((s,o)=>{var n=c=>{try{i(e.next(c))}catch(m){o(m)}},a=c=>{try{i(e.throw(c))}catch(m){o(m)}},i=c=>c.done?s(c.value):Promise.resolve(c.value).then(n,a);i((e=e.apply(r,t)).next())});var tt={};z(tt,{getStreams:()=>X});module.exports=k(tt);var B="31031042b5deb218a10d70a4c01ea934",N="https://api.themoviedb.org/3";function R(r,t){return f(this,null,function*(){let s=`${N}/${t==="tv"?"tv":"movie"}/${r}?api_key=${B}`;try{let o=yield fetch(s);if(!o.ok)throw new Error(`TMDB HTTP ${o.status}`);let n=yield o.json(),a=n.title||n.name||n.original_title||n.original_name,i=n.release_date||n.first_air_date||"",c=i?i.split("-")[0]:"";return{title:a,year:c}}catch(o){return console.error(`[GoFilme] Metadata error: ${o.message}`),null}})}function C(r){return r.toString().toLowerCase().trim().replace(/\s+/g,"-").replace(/[^\w\-]+/g,"").replace(/\-\-+/g,"-").replace(/^-+/,"").replace(/-+$/,"")}var _=W(require("cheerio-without-node-native"));var g="https://gofilme.sx",y={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",Referer:`${g}/`,Accept:"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8","Accept-Language":"en-US,en;q=0.5"};function $(e){return f(this,arguments,function*(r,t={}){console.log(`[GoFilme] Fetching: ${r}`);let s=yield fetch(r,{headers:w(w({},y),t)});if(!s.ok)throw new Error(`HTTP ${s.status} for ${r}`);return yield s.text()})}function H(r){let t=r.toLowerCase();return t.includes("vidmoly")?"Vidmoly":t.includes("voe")||t.includes("matthewhotelscience")?"VOE":"Server"}function P(r){let t=String(r||"").toLowerCase();try{t=decodeURIComponent(t)}catch(s){}let e=[];return/(?:[.;/_-]ro(?:[.;/_?&=-]|$)|rom[aâ]n[aă]?|romanian)/i.test(t)&&e.push("RO"),/(?:[.;/_-]en(?:[.;/_?&=-]|$)|english|englez[aă]?)/i.test(t)&&e.push("EN"),e.length>0?`[${e.join("+")}]`:""}function F(r){try{let t="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",e=String(r).replace(/\s+/g,"").replace(/=+$/,""),s="",o=0,n=0;for(let a=0;a<e.length;a++){let i=t.indexOf(e[a]);if(i===-1)return null;o=o<<6|i,n+=6,n>=8&&(n-=8,s+=String.fromCharCode(o>>n&255))}return s}catch(t){return null}}function q(r){try{let t=r.replace(/[a-zA-Z]/g,a=>{let i=a<="Z"?65:97;return String.fromCharCode((a.charCodeAt(0)-i+13)%26+i)}),e=["@$","^^","~@","%?","*~","!!","#&"].reduce((a,i)=>a.split(i).join("_"),t),s=F(e.split("_").join(""));if(!s)return null;let o=Array.from(s,a=>String.fromCharCode(a.charCodeAt(0)-3)).join(""),n=F(o.split("").reverse().join(""));return n?JSON.parse(n):null}catch(t){return null}}function Z(r){return f(this,null,function*(){try{console.log("[GoFilme] Unpacking Vidmoly direct HLS stream...");let t=yield $(r,{Referer:"https://filmeplayer.xyz/"}),e=t.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||t.match(/sources\s*:\s*\[\s*\{\s*file\s*:\s*["'](https?:\/\/[^"']+)["']/i);if(e)return console.log(`[GoFilme] \u2705 Direct Vidmoly .m3u8 found: ${e[1]}`),{url:e[1],headers:{"User-Agent":y["User-Agent"],Referer:"https://vidmoly.me/"}}}catch(t){console.error(`[GoFilme] Vidmoly resolution error: ${t.message}`)}return null})}function I(r){return f(this,null,function*(){try{console.log("[GoFilme] Unpacking VOE direct stream...");let t=r,e=yield $(t,{Referer:g}),s=e.match(/window\.location\.href\s*=\s*['"]([^"']+)['"]/i);s&&(t=s[1],console.log("[GoFilme] Following VOE mirror redirect..."),e=yield $(t,{Referer:r}));let o=e.match(/<script\s+type=["']application\/json["']>\s*(\[[^\]]+\])\s*<\/script>/i);if(o)try{let a=JSON.parse(o[1]);if(a&&a[0]){let i=q(a[0]),c=i&&(i.source||i.direct_access_url||i.fallback);if(c&&/^https?:\/\//i.test(c)){console.log(`[GoFilme] \u2705 Direct VOE stream found: ${c}`);let m=t.match(/^(https?:\/\/[^/]+)/i),h=m?m[1]:"https://voe.sx";return{url:c,headers:{"User-Agent":y["User-Agent"],Referer:`${h}/`,Origin:h}}}}}catch(a){console.error(`[GoFilme] VOE JSON error: ${a.message}`)}let n=e.match(/['"]?hls['"]?\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||e.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i)||e.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);if(n)return console.log(`[GoFilme] \u2705 Direct VOE stream found: ${n[1]}`),{url:n[1],headers:{"User-Agent":y["User-Agent"],Referer:t}}}catch(t){console.error(`[GoFilme] VOE resolution error: ${t.message}`)}return null})}function J(r){return f(this,null,function*(){let t=r.toLowerCase();if(t.includes("vidmoly")){let e=yield Z(r);if(e)return e}if(t.includes("voe")){let e=yield I(r);if(e)return e}return null})}function Y(r){if(!r)return null;let t=String(r).trim();if(!t.startsWith("http")&&!t.startsWith("//")&&!t.startsWith("<"))try{let e=F(t);e&&(e.includes("http")||e.includes("//")||e.includes("<iframe"))&&(t=e)}catch(e){}if(t.includes("<iframe")){let e=_.default.load(t);t=e("iframe").attr("src")||e("iframe").attr("data-src")||e("iframe").attr("data-url")||""}return t.startsWith("//")&&(t=`https:${t}`),t.startsWith("http://")||t.startsWith("https://")?t:null}function K(r,t){return f(this,null,function*(){if(r.includes("filmeplayer.xyz"))try{console.log(`[GoFilme] Resolving filmeplayer page: ${r}`);let e=yield $(r,{Referer:t}),s=[],o=e.matchAll(/(?:url|src)\s*:\s*["']([^"']+)["']/gi);for(let n of o){let a=n[1].replace(/\\u0026/g,"&").replace(/\\/g,"");a.startsWith("//")&&(a=`https:${a}`),(a.includes("vidmoly")||a.includes("voe"))&&!s.includes(a)&&s.push(a)}if(s.length===0){let n=_.default.load(e);n("iframe").each((a,i)=>{let c=n(i).attr("src")||n(i).attr("data-src")||n(i).attr("data-url");if(c&&(c.includes("vidmoly")||c.includes("voe"))){let m=c.startsWith("//")?`https:${c}`:c;s.includes(m)||s.push(m)}})}if(s.length>0)return s}catch(e){console.error(`[GoFilme] Filmeplayer error: ${e.message}`)}return r.includes("vidmoly")||r.includes("voe")?[r]:[]})}function Q(r,t){return f(this,null,function*(){let e=[],s=r(".zetaflix_player_option, .dooplay_player_option, [data-post], #playeroptionsul li");if(s.length>0)for(let o=0;o<s.length;o++){let n=s.eq(o),a=n.attr("data-post"),i=n.attr("data-nume")||n.attr("data-nump")||o+1,c=n.attr("data-type")||"mv";if(a){let m=`${g}/wp-json/zetaplayer/v2/${a}/${c}/${i}`;try{console.log(`[GoFilme] Fetching ZetaPlayer option ${i}: ${m}`);let h=yield fetch(m,{headers:A(w({},y),{Referer:t,Accept:"application/json"})});if(h.ok){let l=yield h.json(),d=l.embed_url||l.embed||l.url||l.iframe||l.html||(typeof l=="string"?l:null),u=Y(d);u&&(yield K(u,t)).forEach(x=>e.push(x))}}catch(h){console.error(`[GoFilme] ZetaPlayer error: ${h.message}`)}}}return e})}function M(r,t){return f(this,null,function*(){let e=[],s=C(r),o=[`${g}/filme/${s}-${t}/`,`${g}/filme/${s}/`,`${g}/movie/${s}-${t}/`,`${g}/movie/${s}/`],n=null,a=null;for(let l of o)try{n=yield $(l),a=l;break}catch(d){}if(!n)try{let l=`${g}/?s=${encodeURIComponent(r)}`,d=yield $(l),p=_.default.load(d)("article.item a, div.result-item a, .result-item .title a").first().attr("href");p&&(a=p,n=yield $(p))}catch(l){console.error(`[GoFilme] Search failed: ${l.message}`)}if(!n)return console.log(`[GoFilme] Media page not found for "${r}"`),[];let i=_.default.load(n),c=new Set;i("iframe").each((l,d)=>{let u=i(d).attr("src")||i(d).attr("data-src")||i(d).attr("data-lazy-src")||i(d).attr("data-url");u&&(u.includes("vidmoly")||u.includes("voe"))&&c.add(u.startsWith("//")?`https:${u}`:u)}),(yield Q(i,a)).forEach(l=>{(l.includes("vidmoly")||l.includes("voe"))&&c.add(l)});let h=1;for(let l of c){let u=`${H(l)}${P(l)}`,p=yield J(l);if(p&&p.url){let x={name:`GoFilme - ${u}`,title:`${u} - 1080p - Server ${h++}`,url:p.url,quality:"1080p",headers:p.headers};e.push(x)}}return e})}function X(r,t,e,s){return f(this,null,function*(){try{console.log(`[GoFilme] Request for TMDB ID: ${r}, Type: ${t}`);let o=yield R(r,t);return!o||!o.title?(console.error(`[GoFilme] Could not fetch TMDB metadata for ID: ${r}`),[]):(console.log(`[GoFilme] Resolved Title: "${o.title}", Year: "${o.year}"`),t==="movie"?yield M(o.title,o.year):(console.log("[GoFilme] TV Shows not currently supported."),[]))}catch(o){return console.error(`[GoFilme] Fatal Error: ${o.message}`),[]}})}
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __defProps = Object.defineProperties;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getOwnPropSymbols = Object.getOwnPropertySymbols;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __async = (__this, __arguments, generator) => {
+  return new Promise((resolve, reject) => {
+    var fulfilled = (value) => {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var rejected = (value) => {
+      try {
+        step(generator.throw(value));
+      } catch (e) {
+        reject(e);
+      }
+    };
+    var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+    step((generator = generator.apply(__this, __arguments)).next());
+  });
+};
+
+// src/gofilme/index.js
+var gofilme_exports = {};
+__export(gofilme_exports, {
+  getStreams: () => getStreams
+});
+module.exports = __toCommonJS(gofilme_exports);
+
+// src/gofilme/tmdb.js
+var TMDB_API_KEY = "31031042b5deb218a10d70a4c01ea934";
+var TMDB_BASE_URL = "https://api.themoviedb.org/3";
+function getMetadata(tmdbId, mediaType) {
+  return __async(this, null, function* () {
+    const endpoint = mediaType === "tv" ? "tv" : "movie";
+    const url = `${TMDB_BASE_URL}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`;
+    try {
+      const response = yield fetch(url);
+      if (!response.ok)
+        throw new Error(`TMDB HTTP ${response.status}`);
+      const data = yield response.json();
+      const title = data.title || data.name || data.original_title || data.original_name;
+      const releaseDate = data.release_date || data.first_air_date || "";
+      const year = releaseDate ? releaseDate.split("-")[0] : "";
+      return { title, year };
+    } catch (err) {
+      console.error(`[GoFilme] Metadata error: ${err.message}`);
+      return null;
+    }
+  });
+}
+function slugify(text) {
+  return text.toString().toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w\-]+/g, "").replace(/\-\-+/g, "-").replace(/^-+/, "").replace(/-+$/, "");
+}
+
+// src/gofilme/extractor.js
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+
+// src/gofilme/http.js
+var BASE_URL = "https://gofilme.sx";
+var HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/122.0.0.0 Safari/537.36",
+  Referer: `${BASE_URL}/`,
+  Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.5"
+};
+function fetchText(_0) {
+  return __async(this, arguments, function* (url, customHeaders = {}) {
+    console.log(`[GoFilme] Fetching: ${url}`);
+    const response = yield fetch(url, {
+      headers: __spreadValues(__spreadValues({}, HEADERS), customHeaders)
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} for ${url}`);
+    }
+    return yield response.text();
+  });
+}
+
+// src/gofilme/extractor.js
+function getHostName(url) {
+  const lUrl = url.toLowerCase();
+  if (lUrl.includes("vidmoly"))
+    return "Vidmoly";
+  if (lUrl.includes("voe") || lUrl.includes("matthewhotelscience"))
+    return "VOE";
+  return "Server";
+}
+function getLanguageLabel(embedUrl) {
+  let decoded = String(embedUrl || "").toLowerCase();
+  try {
+    decoded = decodeURIComponent(decoded);
+  } catch (_) {
+  }
+  const languages = [];
+  if (/(?:[.;/_-]ro(?:[.;/_?&=-]|$)|rom[aâ]n[aă]?|romanian)/i.test(decoded)) {
+    languages.push("RO");
+  }
+  if (/(?:[.;/_-]en(?:[.;/_?&=-]|$)|english|englez[aă]?)/i.test(decoded)) {
+    languages.push("EN");
+  }
+  return languages.length > 0 ? `[${languages.join("+")}]` : "";
+}
+function decodeBase64(value) {
+  try {
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    const input = String(value).replace(/\s+/g, "").replace(/=+$/, "");
+    let output = "";
+    let buffer = 0;
+    let bits = 0;
+    for (let i = 0; i < input.length; i++) {
+      const index = alphabet.indexOf(input[i]);
+      if (index === -1)
+        return null;
+      buffer = buffer << 6 | index;
+      bits += 6;
+      if (bits >= 8) {
+        bits -= 8;
+        output += String.fromCharCode(buffer >> bits & 255);
+      }
+    }
+    return output;
+  } catch (_) {
+    return null;
+  }
+}
+function decodeVoeConfig(payload) {
+  try {
+    const rot13 = payload.replace(/[a-zA-Z]/g, (char) => {
+      const start = char <= "Z" ? 65 : 97;
+      return String.fromCharCode(
+        (char.charCodeAt(0) - start + 13) % 26 + start
+      );
+    });
+    const normalized = ["@$", "^^", "~@", "%?", "*~", "!!", "#&"].reduce(
+      (value, marker) => value.split(marker).join("_"),
+      rot13
+    );
+    const firstPass = decodeBase64(normalized.split("_").join(""));
+    if (!firstPass)
+      return null;
+    const shifted = Array.from(
+      firstPass,
+      (char) => String.fromCharCode(char.charCodeAt(0) - 3)
+    ).join("");
+    const json = decodeBase64(shifted.split("").reverse().join(""));
+    return json ? JSON.parse(json) : null;
+  } catch (_) {
+    return null;
+  }
+}
+function resolveVidmolyDirect(embedUrl) {
+  return __async(this, null, function* () {
+    try {
+      console.log(`[GoFilme] Unpacking Vidmoly direct HLS stream...`);
+      const html = yield fetchText(embedUrl, {
+        Referer: "https://filmeplayer.xyz/"
+      });
+      const match = html.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i) || html.match(
+        /sources\s*:\s*\[\s*\{\s*file\s*:\s*["'](https?:\/\/[^"']+)["']/i
+      );
+      if (match) {
+        console.log(`[GoFilme] \u2705 Direct Vidmoly .m3u8 found: ${match[1]}`);
+        return {
+          url: match[1],
+          headers: {
+            "User-Agent": HEADERS["User-Agent"],
+            Referer: "https://vidmoly.me/"
+          }
+        };
+      }
+    } catch (e) {
+      console.error(`[GoFilme] Vidmoly resolution error: ${e.message}`);
+    }
+    return null;
+  });
+}
+function resolveVoeDirect(embedUrl) {
+  return __async(this, null, function* () {
+    try {
+      console.log(`[GoFilme] Unpacking VOE direct stream...`);
+      let currentUrl = embedUrl;
+      let html = yield fetchText(currentUrl, { Referer: BASE_URL });
+      const redirectMatch = html.match(
+        /window\.location\.href\s*=\s*['"]([^"']+)['"]/i
+      );
+      if (redirectMatch) {
+        currentUrl = redirectMatch[1];
+        console.log(`[GoFilme] Following VOE mirror redirect...`);
+        html = yield fetchText(currentUrl, { Referer: embedUrl });
+      }
+      const voeJsonMatch = html.match(
+        /<script\s+type=["']application\/json["']>\s*(\[[^\]]+\])\s*<\/script>/i
+      );
+      if (voeJsonMatch) {
+        try {
+          const arr = JSON.parse(voeJsonMatch[1]);
+          if (arr && arr[0]) {
+            const config = decodeVoeConfig(arr[0]);
+            const source = config && (config.source || config.direct_access_url || config.fallback);
+            if (source && /^https?:\/\//i.test(source)) {
+              console.log(`[GoFilme] \u2705 Direct VOE stream found: ${source}`);
+              const originMatch = currentUrl.match(/^(https?:\/\/[^/]+)/i);
+              const origin = originMatch ? originMatch[1] : "https://voe.sx";
+              return {
+                url: source,
+                headers: {
+                  "User-Agent": HEADERS["User-Agent"],
+                  Referer: `${origin}/`,
+                  Origin: origin
+                }
+              };
+            }
+          }
+        } catch (e) {
+          console.error(`[GoFilme] VOE JSON error: ${e.message}`);
+        }
+      }
+      let match = html.match(
+        /['"]?hls['"]?\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i
+      ) || html.match(/file\s*:\s*["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i) || html.match(/["'](https?:\/\/[^"']+\.m3u8[^"']*)["']/i);
+      if (match) {
+        console.log(`[GoFilme] \u2705 Direct VOE stream found: ${match[1]}`);
+        return {
+          url: match[1],
+          headers: {
+            "User-Agent": HEADERS["User-Agent"],
+            Referer: currentUrl
+          }
+        };
+      }
+    } catch (e) {
+      console.error(`[GoFilme] VOE resolution error: ${e.message}`);
+    }
+    return null;
+  });
+}
+function extractDirectStream(embedUrl) {
+  return __async(this, null, function* () {
+    const lUrl = embedUrl.toLowerCase();
+    if (lUrl.includes("vidmoly")) {
+      const res = yield resolveVidmolyDirect(embedUrl);
+      if (res)
+        return res;
+    }
+    if (lUrl.includes("voe")) {
+      const res = yield resolveVoeDirect(embedUrl);
+      if (res)
+        return res;
+    }
+    return null;
+  });
+}
+function parseEmbedUrl(raw) {
+  if (!raw)
+    return null;
+  let text = String(raw).trim();
+  if (!text.startsWith("http") && !text.startsWith("//") && !text.startsWith("<")) {
+    try {
+      const decoded = decodeBase64(text);
+      if (decoded && (decoded.includes("http") || decoded.includes("//") || decoded.includes("<iframe"))) {
+        text = decoded;
+      }
+    } catch (e) {
+    }
+  }
+  if (text.includes("<iframe")) {
+    const $f = import_cheerio_without_node_native.default.load(text);
+    text = $f("iframe").attr("src") || $f("iframe").attr("data-src") || $f("iframe").attr("data-url") || "";
+  }
+  if (text.startsWith("//")) {
+    text = `https:${text}`;
+  }
+  return text.startsWith("http://") || text.startsWith("https://") ? text : null;
+}
+function resolveEmbedUrl(embedUrl, parentUrl) {
+  return __async(this, null, function* () {
+    if (embedUrl.includes("filmeplayer.xyz")) {
+      try {
+        console.log(`[GoFilme] Resolving filmeplayer page: ${embedUrl}`);
+        const html = yield fetchText(embedUrl, { Referer: parentUrl });
+        const nested = [];
+        const urlMatches = html.matchAll(/(?:url|src)\s*:\s*["']([^"']+)["']/gi);
+        for (const match of urlMatches) {
+          let cleanUrl = match[1].replace(/\\u0026/g, "&").replace(/\\/g, "");
+          if (cleanUrl.startsWith("//"))
+            cleanUrl = `https:${cleanUrl}`;
+          if ((cleanUrl.includes("vidmoly") || cleanUrl.includes("voe")) && !nested.includes(cleanUrl)) {
+            nested.push(cleanUrl);
+          }
+        }
+        if (nested.length === 0) {
+          const $ = import_cheerio_without_node_native.default.load(html);
+          $("iframe").each((_, el) => {
+            const src = $(el).attr("src") || $(el).attr("data-src") || $(el).attr("data-url");
+            if (src && (src.includes("vidmoly") || src.includes("voe"))) {
+              const cleanSrc = src.startsWith("//") ? `https:${src}` : src;
+              if (!nested.includes(cleanSrc))
+                nested.push(cleanSrc);
+            }
+          });
+        }
+        if (nested.length > 0) {
+          return nested;
+        }
+      } catch (e) {
+        console.error(`[GoFilme] Filmeplayer error: ${e.message}`);
+      }
+    }
+    return embedUrl.includes("vidmoly") || embedUrl.includes("voe") ? [embedUrl] : [];
+  });
+}
+function fetchZetaEmbeds($, pageUrl) {
+  return __async(this, null, function* () {
+    const embeds = [];
+    const options = $(
+      ".zetaflix_player_option, .dooplay_player_option, [data-post], #playeroptionsul li"
+    );
+    if (options.length > 0) {
+      for (let i = 0; i < options.length; i++) {
+        const el = options.eq(i);
+        const postId = el.attr("data-post");
+        const nume = el.attr("data-nume") || el.attr("data-nump") || i + 1;
+        const type = el.attr("data-type") || "mv";
+        if (postId) {
+          const apiEndpoint = `${BASE_URL}/wp-json/zetaplayer/v2/${postId}/${type}/${nume}`;
+          try {
+            console.log(
+              `[GoFilme] Fetching ZetaPlayer option ${nume}: ${apiEndpoint}`
+            );
+            const response = yield fetch(apiEndpoint, {
+              headers: __spreadProps(__spreadValues({}, HEADERS), {
+                Referer: pageUrl,
+                Accept: "application/json"
+              })
+            });
+            if (response.ok) {
+              const json = yield response.json();
+              const target = json.embed_url || json.embed || json.url || json.iframe || json.html || (typeof json === "string" ? json : null);
+              const extractedUrl = parseEmbedUrl(target);
+              if (extractedUrl) {
+                const resolvedUrls = yield resolveEmbedUrl(extractedUrl, pageUrl);
+                resolvedUrls.forEach((url) => embeds.push(url));
+              }
+            }
+          } catch (e) {
+            console.error(`[GoFilme] ZetaPlayer error: ${e.message}`);
+          }
+        }
+      }
+    }
+    return embeds;
+  });
+}
+function extractMovieStreams(title, year) {
+  return __async(this, null, function* () {
+    const streams = [];
+    const slug = slugify(title);
+    const candidateUrls = [
+      `${BASE_URL}/filme/${slug}-${year}/`,
+      `${BASE_URL}/filme/${slug}/`,
+      `${BASE_URL}/movie/${slug}-${year}/`,
+      `${BASE_URL}/movie/${slug}/`
+    ];
+    let pageHtml = null;
+    let finalPageUrl = null;
+    for (const targetUrl of candidateUrls) {
+      try {
+        pageHtml = yield fetchText(targetUrl);
+        finalPageUrl = targetUrl;
+        break;
+      } catch (e) {
+      }
+    }
+    if (!pageHtml) {
+      try {
+        const searchUrl = `${BASE_URL}/?s=${encodeURIComponent(title)}`;
+        const searchHtml = yield fetchText(searchUrl);
+        const $search = import_cheerio_without_node_native.default.load(searchHtml);
+        const matchedLink = $search(
+          "article.item a, div.result-item a, .result-item .title a"
+        ).first().attr("href");
+        if (matchedLink) {
+          finalPageUrl = matchedLink;
+          pageHtml = yield fetchText(matchedLink);
+        }
+      } catch (e) {
+        console.error(`[GoFilme] Search failed: ${e.message}`);
+      }
+    }
+    if (!pageHtml) {
+      console.log(`[GoFilme] Media page not found for "${title}"`);
+      return [];
+    }
+    const $ = import_cheerio_without_node_native.default.load(pageHtml);
+    const embedUrls = /* @__PURE__ */ new Set();
+    $("iframe").each((_, el) => {
+      const src = $(el).attr("src") || $(el).attr("data-src") || $(el).attr("data-lazy-src") || $(el).attr("data-url");
+      if (src && (src.includes("vidmoly") || src.includes("voe"))) {
+        embedUrls.add(src.startsWith("//") ? `https:${src}` : src);
+      }
+    });
+    const zetaEmbeds = yield fetchZetaEmbeds($, finalPageUrl);
+    zetaEmbeds.forEach((url) => {
+      if (url.includes("vidmoly") || url.includes("voe")) {
+        embedUrls.add(url);
+      }
+    });
+    let index = 1;
+    for (const embedUrl of embedUrls) {
+      const hostName = getHostName(embedUrl);
+      const serverName = `${hostName}${getLanguageLabel(embedUrl)}`;
+      const directMedia = yield extractDirectStream(embedUrl);
+      if (directMedia && directMedia.url) {
+        const streamObj = {
+          name: `GoFilme - ${serverName}`,
+          title: `${serverName} - 1080p - Server ${index++}`,
+          url: directMedia.url,
+          quality: "1080p",
+          language: "ro",
+          headers: directMedia.headers
+        };
+        streams.push(streamObj);
+      }
+    }
+    return streams;
+  });
+}
+
+// src/gofilme/index.js
+function getStreams(tmdbId, mediaType, season, episode) {
+  return __async(this, null, function* () {
+    try {
+      console.log(`[GoFilme] Request for TMDB ID: ${tmdbId}, Type: ${mediaType}`);
+      const metadata = yield getMetadata(tmdbId, mediaType);
+      if (!metadata || !metadata.title) {
+        console.error(
+          `[GoFilme] Could not fetch TMDB metadata for ID: ${tmdbId}`
+        );
+        return [];
+      }
+      console.log(
+        `[GoFilme] Resolved Title: "${metadata.title}", Year: "${metadata.year}"`
+      );
+      if (mediaType === "movie") {
+        return yield extractMovieStreams(metadata.title, metadata.year);
+      } else {
+        console.log(`[GoFilme] TV Shows not currently supported.`);
+        return [];
+      }
+    } catch (error) {
+      console.error(`[GoFilme] Fatal Error: ${error.message}`);
+      return [];
+    }
+  });
+}
