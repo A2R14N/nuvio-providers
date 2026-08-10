@@ -1,6 +1,6 @@
 {
   "name": "A2R14N's Repo",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "scrapers": [
     {
       "id": "deseneledublate",
@@ -207,7 +207,7 @@
       "id": "uhdmovies",
       "name": "UHDMovies",
       "description": "4K and 1080p Hindi-English dual-audio movies",
-      "version": "1.0.4",
+      "version": "1.0.5",
       "author": "A2R14N",
       "supportedTypes": ["movie"],
       "filename": "providers/uhdmovies.js",

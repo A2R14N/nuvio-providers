@@ -1,6 +1,6 @@
 /**
  * uhdmovies - Built from src/uhdmovies/
- * Generated: 2026-08-07T21:48:52.004Z
+ * Generated: 2026-08-10T20:33:50.309Z
  */
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
@@ -24,7 +24,8 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/uhdmovies/index.js
-var BASE_URL = "https://uhdmovies.autos";
+var BASE_URLS = ["https://uhdmovies.autos", "https://uhdmovies.pink"];
+var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
 var TMDB_URL = "https://api.themoviedb.org/3";
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36";
@@ -52,11 +53,43 @@ function getOrigin(url) {
 function absoluteUrl(url, base) {
   if (!url)
     return "";
-  if (/^https?:\/\//i.test(url))
-    return url;
-  if (url.startsWith("//"))
-    return `https:${url}`;
-  return `${getOrigin(base)}${url.startsWith("/") ? "" : "/"}${url}`;
+  try {
+    return new URL(decodeHtml(url), base).toString();
+  } catch (e) {
+    return "";
+  }
+}
+function isDirectVideo(url) {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return host.endsWith(".workers.dev") || host.endsWith(".r2.cloudflarestorage.com") || host.endsWith(".r2.dev") || host === "video-downloads.googleusercontent.com" || host.endsWith(".googlevideo.com");
+  } catch (e) {
+    return false;
+  }
+}
+function unique(values) {
+  const seen = {};
+  return values.filter((value) => {
+    if (!value || seen[value])
+      return false;
+    seen[value] = true;
+    return true;
+  });
+}
+function findDirectVideos(html, base) {
+  const found = anchors(html).map((item) => absoluteUrl(item.href, base)).filter(isDirectVideo);
+  const pattern = /https?:\\?\/\\?\/[^\s"'<>\\]+(?:workers\.dev|r2\.cloudflarestorage\.com|r2\.dev|googleusercontent\.com|googlevideo\.com)[^\s"'<>]*/gi;
+  const matches = String(html || "").match(pattern) || [];
+  matches.forEach((match) => {
+    const candidate = decodeHtml(match.replace(/\\\//g, "/"));
+    if (isDirectVideo(candidate))
+      found.push(candidate);
+  });
+  return unique(found).filter(
+    (candidate, index, values) => !values.some(
+      (other, otherIndex) => otherIndex !== index && other.length > candidate.length && other.startsWith(candidate)
+    )
+  );
 }
 function formBody(fields) {
   return Object.keys(fields).map(
@@ -112,7 +145,10 @@ function bypassGateway(url) {
     const firstForm = readLandingForm(firstHtml);
     if (!firstForm.action)
       return "";
-    const secondHtml = yield fetchText(firstForm.action, {
+    const firstAction = absoluteUrl(firstForm.action, url);
+    if (!firstAction)
+      return "";
+    const secondHtml = yield fetchText(firstAction, {
       method: "POST",
       headers: Object.assign({}, HEADERS, {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -123,11 +159,14 @@ function bypassGateway(url) {
     const secondForm = readLandingForm(secondHtml);
     if (!secondForm.action)
       return "";
-    const thirdHtml = yield fetchText(secondForm.action, {
+    const secondAction = absoluteUrl(secondForm.action, firstAction);
+    if (!secondAction)
+      return "";
+    const thirdHtml = yield fetchText(secondAction, {
       method: "POST",
       headers: Object.assign({}, HEADERS, {
         "Content-Type": "application/x-www-form-urlencoded",
-        Referer: firstForm.action
+        Referer: firstAction
       }),
       body: formBody(secondForm.fields)
     });
@@ -139,14 +178,27 @@ function bypassGateway(url) {
     const redirectHtml = yield fetchText(`${origin}/?go=${token}`, {
       headers: Object.assign({}, HEADERS, {
         Cookie: `${token}=${cookieValue}`,
-        Referer: secondForm.action
+        Referer: secondAction
       })
     });
     const refreshMatch = redirectHtml.match(
-      /http-equiv=["']refresh["'][^>]+content=["'][^"']*url=([^"']+)/i
+      /http-equiv=["']refresh["'][^>]+content=["'][^"']*url\s*=\s*([^"']+)/i
     );
-    return refreshMatch ? refreshMatch[1].replace(/&amp;/g, "&") : "";
+    const scriptMatch = redirectHtml.match(
+      /(?:window\.)?location(?:\.href|\.replace)?\s*(?:=|\()\s*["']([^"']+)/i
+    );
+    return absoluteUrl((refreshMatch == null ? void 0 : refreshMatch[1]) || (scriptMatch == null ? void 0 : scriptMatch[1]), `${origin}/`);
   });
+}
+function redirectedDownloadUrl(url) {
+  const match = String(url || "").match(/[?&]url=([^&]+)/i);
+  if (!match)
+    return "";
+  try {
+    return decodeURIComponent(match[1]);
+  } catch (e) {
+    return match[1];
+  }
 }
 function resolveDriveSeed(url) {
   return __async(this, null, function* () {
@@ -157,27 +209,54 @@ function resolveDriveSeed(url) {
         /(?:window\.location\.)?replace\(["']([^"']+)["']\)/i
       );
       if (!redirectMatch)
-        return "";
+        return [];
       pageUrl = absoluteUrl(redirectMatch[1], pageUrl);
     }
     const fileHtml = yield fetchText(pageUrl, { headers: HEADERS });
     const fileLinks = anchors(fileHtml);
-    const resumeLink = fileLinks.find(
-      (link) => /resume cloud/i.test(link.text)
+    const directUrls = findDirectVideos(fileHtml, pageUrl);
+    const sourceLinks = fileLinks.filter(
+      (link) => /resume cloud|cloud download|instant download|direct download|download now/i.test(
+        link.text
+      )
     );
-    if (resumeLink) {
-      const resumeUrl = absoluteUrl(resumeLink.href, pageUrl);
-      const resumeHtml = yield fetchText(resumeUrl, {
-        headers: Object.assign({}, HEADERS, { Referer: pageUrl })
+    if (directUrls.length)
+      return [directUrls[0]];
+    function resolveSource(link) {
+      return __async(this, null, function* () {
+        const sourceUrl = absoluteUrl(link && link.href, pageUrl);
+        if (!sourceUrl)
+          return "";
+        if (isDirectVideo(sourceUrl))
+          return sourceUrl;
+        try {
+          const response = yield fetch(sourceUrl, {
+            headers: Object.assign({}, HEADERS, { Referer: pageUrl }),
+            redirect: "follow"
+          });
+          const redirected = redirectedDownloadUrl(response.url);
+          if (isDirectVideo(redirected))
+            return redirected;
+          if (isDirectVideo(response.url))
+            return response.url;
+          const html = yield response.text();
+          return findDirectVideos(html, sourceUrl)[0] || "";
+        } catch (e) {
+          return "";
+        }
       });
-      const resumeLinks = anchors(resumeHtml);
-      const direct = resumeLinks.find(
-        (link) => /^https?:\/\/[^/]*workers\.dev\//i.test(link.href)
-      );
-      if (direct)
-        return direct.href;
     }
-    return "";
+    const cloudLink = sourceLinks.find(
+      (link) => /resume cloud|cloud download/i.test(link.text)
+    );
+    const cloudUrl = yield resolveSource(cloudLink);
+    if (cloudUrl)
+      return [cloudUrl];
+    const instantLink = sourceLinks.find(
+      (link) => /instant download|direct download|download now/i.test(link.text)
+    );
+    const instantUrl = yield resolveSource(instantLink);
+    return instantUrl ? [instantUrl] : [];
   });
 }
 function fetchMetadata(tmdbId) {
@@ -199,34 +278,70 @@ function fetchMetadata(tmdbId) {
 function normalizeTitle(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 }
-function findMoviePage(metadata) {
+function domainCandidates() {
   return __async(this, null, function* () {
-    const searchHtml = yield fetchText(
-      `${BASE_URL}/?s=${encodeURIComponent(metadata.title)}`,
-      { headers: HEADERS }
-    );
-    const expectedTitle = normalizeTitle(metadata.title);
-    const expectedOriginal = normalizeTitle(metadata.originalTitle);
-    let best = null;
-    const articles = searchHtml.match(/<article\b[^>]*>[\s\S]*?<\/article>/gi) || [];
-    articles.forEach((article) => {
-      const link = anchors(article)[0] || {};
-      const href = link.href;
-      const title = link.title || link.text || stripTags(article);
-      if (!href || !title)
-        return;
-      const normalized = normalizeTitle(title);
-      let score = 0;
-      if (expectedTitle && normalized.includes(expectedTitle))
-        score += 4;
-      if (expectedOriginal && normalized.includes(expectedOriginal))
-        score += 3;
-      if (metadata.year && normalized.includes(metadata.year))
-        score += 2;
-      if (!best || score > best.score)
-        best = { href, score };
-    });
-    return best && best.score >= 4 ? best.href : "";
+    try {
+      const response = yield fetch(DOMAINS_URL, { headers: HEADERS });
+      if (response.ok) {
+        const data = yield response.json();
+        return unique([data.UHDMovies, ...BASE_URLS]);
+      }
+    } catch (e) {
+    }
+    return BASE_URLS;
+  });
+}
+function findMoviesInSearch(searchHtml, metadata) {
+  const expectedTitle = normalizeTitle(metadata.title);
+  const expectedOriginal = normalizeTitle(metadata.originalTitle);
+  const matches = [];
+  const articles = searchHtml.match(/<article\b[^>]*>[\s\S]*?<\/article>/gi) || [];
+  articles.forEach((article) => {
+    const link = anchors(article)[0] || {};
+    const href = link.href;
+    const title = link.title || link.text || stripTags(article);
+    if (!href || !title)
+      return;
+    const normalized = normalizeTitle(title);
+    const yearMatch = title.match(/\b(19|20)\d{2}\b/);
+    const resultYear = yearMatch ? Number(yearMatch[0]) : null;
+    const expectedYear = metadata.year ? Number(metadata.year) : null;
+    if (expectedYear && resultYear && Math.abs(resultYear - expectedYear) > 1) {
+      return;
+    }
+    if (/\bseason\b|\bs\d{1,2}\b/i.test(title))
+      return;
+    let score = 0;
+    if (expectedTitle && normalized.includes(expectedTitle))
+      score += 4;
+    if (expectedOriginal && normalized.includes(expectedOriginal))
+      score += 3;
+    if (metadata.year && normalized.includes(metadata.year))
+      score += 2;
+    if (score >= 4)
+      matches.push({ href, score });
+  });
+  matches.sort((a, b) => b.score - a.score);
+  return unique(matches.map((item) => item.href));
+}
+function findMoviePages(metadata) {
+  return __async(this, null, function* () {
+    const domains = yield domainCandidates();
+    for (const domain of domains) {
+      try {
+        const searchHtml = yield fetchText(
+          `${domain}/?s=${encodeURIComponent(metadata.title)}`,
+          { headers: HEADERS }
+        );
+        const moviePages = findMoviesInSearch(searchHtml, metadata).map(
+          (page) => absoluteUrl(page, domain)
+        );
+        if (moviePages.length)
+          return unique(moviePages);
+      } catch (e) {
+      }
+    }
+    return [];
   });
 }
 function parseQuality(label) {
@@ -244,6 +359,10 @@ function compactReleaseLabel(label) {
 }
 function extractReleases(html) {
   const releases = [];
+  const pageHeading = stripTags(
+    (String(html || "").match(/<h1\b[^>]*>[\s\S]*?<\/h1>/i) || [""])[0]
+  );
+  const language = /english audio/i.test(pageHeading) && !/dual[ -]?audio/i.test(pageHeading) ? "en" : "hi \u2022 en";
   const paragraphs = String(html || "").match(/<p\b[^>]*>[\s\S]*?<\/p>/gi) || [];
   paragraphs.forEach((paragraph, index) => {
     const label = stripTags(paragraph);
@@ -260,7 +379,8 @@ function extractReleases(html) {
       label,
       url,
       quality: parseQuality(label),
-      size: parseSize(label)
+      size: parseSize(label),
+      language
     });
   });
   return releases;
@@ -276,28 +396,29 @@ function resolveRelease(release) {
         console.log("[UHDMovies] Gateway did not return a DriveSeed link");
         return null;
       }
-      const streamUrl = yield resolveDriveSeed(driveSeedUrl);
-      if (!streamUrl || !/^https?:\/\/[^/]*workers\.dev\//i.test(streamUrl)) {
-        console.log("[UHDMovies] DriveSeed did not return a worker link");
-        return null;
+      const streamUrls = yield resolveDriveSeed(driveSeedUrl);
+      if (!streamUrls.length) {
+        console.log("[UHDMovies] DriveSeed did not return a direct link");
+        return [];
       }
       const details = compactReleaseLabel(release.label);
-      return {
+      return streamUrls.map((streamUrl) => ({
         name: "UHDMovies",
         title: `UHDMovies - ${details}`,
         url: streamUrl,
         quality: release.quality,
-        language: "hi \u2022 en",
+        language: release.language,
         type: "video/x-matroska",
         headers: {
           "User-Agent": USER_AGENT,
           Referer: driveSeedUrl
         },
-        size: release.size
-      };
+        size: release.size,
+        provider: "uhdmovies"
+      }));
     } catch (error) {
       console.log(`[UHDMovies] Release unavailable: ${error.message}`);
-      return null;
+      return [];
     }
   });
 }
@@ -312,18 +433,27 @@ function getStreams(tmdbId, mediaType) {
         console.log("[UHDMovies] TMDB returned no title");
         return [];
       }
-      const moviePage = yield findMoviePage(metadata);
-      if (!moviePage) {
+      const moviePages = yield findMoviePages(metadata);
+      if (!moviePages.length) {
         console.log(`[UHDMovies] No result for ${metadata.title}`);
         return [];
       }
-      const movieHtml = yield fetchText(moviePage, { headers: HEADERS });
-      const releases = extractReleases(movieHtml);
+      console.log(`[UHDMovies] Found ${moviePages.length} matching post(s)`);
+      const releaseGroups = yield Promise.all(
+        moviePages.map((moviePage) => __async(this, null, function* () {
+          const movieHtml = yield fetchText(moviePage, { headers: HEADERS });
+          return extractReleases(movieHtml);
+        }))
+      );
+      const releases = releaseGroups.reduce(
+        (all, group) => all.concat(group),
+        []
+      );
       console.log(`[UHDMovies] Found ${releases.length} release(s)`);
       if (!releases.length)
         return [];
       const resolved = yield Promise.all(releases.map(resolveRelease));
-      const streams = resolved.filter(Boolean);
+      const streams = resolved.reduce((all, item) => all.concat(item), []);
       console.log(`[UHDMovies] Returning ${streams.length} stream(s)`);
       if (!streams.length) {
         console.log(
