@@ -1,6 +1,6 @@
 {
   "name": "A2R14N's Repo",
-  "version": "1.12.15",
+  "version": "1.12.41",
   "scrapers": [
     {
       "id": "deseneledublate",
@@ -384,19 +384,6 @@
       "enabled": true,
       "formats": ["m3u8", "mp4", "mkv"],
       "logo": "https://vidfast.vc/favicon.ico",
-      "contentLanguage": ["en"]
-    },
-    {
-      "id": "cinejoy",
-      "name": "Cinejoy",
-      "description": "Direct validated movie and TV streams from Cinejoy's multi-server API",
-      "version": "1.0.0",
-      "author": "A2R14N",
-      "supportedTypes": ["movie", "tv"],
-      "filename": "providers/cinejoy.js",
-      "enabled": true,
-      "formats": ["m3u8", "mp4"],
-      "logo": "https://cinejoy.to/favicon.ico",
       "contentLanguage": ["en"]
     },
     {
