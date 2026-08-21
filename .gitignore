@@ -1,0 +1,23 @@
+node_modules/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Temporary and generated development files
+scratch/
+scratch_*.js
+tmp/
+temp/
+.cache/
+coverage/
+.nyc_output/
+*.log
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/
