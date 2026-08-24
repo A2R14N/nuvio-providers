@@ -24,6 +24,9 @@ https://raw.githubusercontent.com/A2R14N/nuvio-providers/ro-main/manifest.json
 | **FSonline** | Movies and series with Romanian subtitles | Movies, TV |
 | **DozaAnimata** | Cartoons and anime in Romanian | Movies, TV |
 | **SerialeOnline** | Series, films, and anime with Romanian subtitles | Movies, TV |
+| **FilmeHD** | Movies and series with Romanian subtitles | Movies, TV |
+| **VeziHD** | Movies with Romanian subtitles | Movies, TV |
+| **XFilme** | Movies and series with Romanian subtitles | Movies, TV |
 
 ## Features
 
@@ -36,11 +39,12 @@ https://raw.githubusercontent.com/A2R14N/nuvio-providers/ro-main/manifest.json
 ## Notes
 
 - Availability depends on the upstream sites; a title that worked yesterday may be temporarily unavailable
+- Some sources solve an anti-bot challenge before playback starts, so the first attempt on certain servers can take up to a minute
 - Streams are pulled from public sources exactly as the sites serve them to visitors
 - Intended for personal use
 
 ## Version
 
-Current release: **1.2.0** (10 providers)
+Current release: **1.2.0** (13 providers)
 
 Development happens on the private [`ro-dev`](https://github.com/A2R14N/nuvio-providers-dev/tree/ro-dev) branch of [`A2R14N/nuvio-providers-dev`](https://github.com/A2R14N/nuvio-providers-dev).

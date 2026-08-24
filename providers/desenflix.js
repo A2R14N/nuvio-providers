@@ -564,106 +564,122 @@ var POW_INPUT = new Uint8Array(160);
 var POW_DIGITS = new Uint8Array(12);
 var POW_TABLE = new Uint32Array(512);
 var POW_OUT = new Uint32Array(8);
-function powHashBytes(length) {
-  const table = POW_TABLE;
+var POW_SEED = new Uint32Array(4);
+function powAbsorb(from, to) {
   const input = POW_INPUT;
-  let mixedState = 0;
-  let s0 = 1779033703;
-  let s1 = 3144134277;
-  let s2 = 1013904242;
-  let s3 = 2773480762;
-  for (let index = 0; index < length; index += 1) {
-    s0 = s0 + input[index] >>> 0;
-    s0 = (s0 << 7 | s0 >>> 25) >>> 0;
-    s0 = s0 + s1 >>> 0;
-    mixedState = s3 ^ s0;
-    s3 = (mixedState << 16 | mixedState >>> 16) >>> 0;
-    s2 = s2 + s3 >>> 0;
-    mixedState = s1 ^ s2;
-    s1 = (mixedState << 12 | mixedState >>> 20) >>> 0;
-    s0 = s0 + s1 >>> 0;
-    mixedState = s3 ^ s0;
-    s3 = (mixedState << 8 | mixedState >>> 24) >>> 0;
-    s2 = s2 + s3 >>> 0;
-    mixedState = s1 ^ s2;
-    s1 = (mixedState << 7 | mixedState >>> 25) >>> 0;
+  let s0 = POW_SEED[0];
+  let s1 = POW_SEED[1];
+  let s2 = POW_SEED[2];
+  let s3 = POW_SEED[3];
+  for (let index = from; index < to; index += 1) {
+    s0 = s0 + input[index];
+    s0 = s0 << 7 | s0 >>> 25;
+    s0 = s0 + s1;
+    let mixed = s3 ^ s0;
+    s3 = mixed << 16 | mixed >>> 16;
+    s2 = s2 + s3;
+    mixed = s1 ^ s2;
+    s1 = mixed << 12 | mixed >>> 20;
+    s0 = s0 + s1;
+    mixed = s3 ^ s0;
+    s3 = mixed << 8 | mixed >>> 24;
+    s2 = s2 + s3;
+    mixed = s1 ^ s2;
+    s1 = mixed << 7 | mixed >>> 25;
   }
+  POW_SEED[0] = s0;
+  POW_SEED[1] = s1;
+  POW_SEED[2] = s2;
+  POW_SEED[3] = s3;
+}
+function powFinish(outWords) {
+  const table = POW_TABLE;
+  const imulA = Math.imul;
+  let s0 = POW_SEED[0];
+  let s1 = POW_SEED[1];
+  let s2 = POW_SEED[2];
+  let s3 = POW_SEED[3];
   for (let index = 0; index < 8; index += 1) {
-    s0 = s0 + s1 >>> 0;
-    mixedState = s3 ^ s0;
-    s3 = (mixedState << 16 | mixedState >>> 16) >>> 0;
-    s2 = s2 + s3 >>> 0;
+    s0 = s0 + s1;
+    let mixedState = s3 ^ s0;
+    s3 = mixedState << 16 | mixedState >>> 16;
+    s2 = s2 + s3;
     mixedState = s1 ^ s2;
-    s1 = (mixedState << 12 | mixedState >>> 20) >>> 0;
-    s0 = s0 + s1 >>> 0;
+    s1 = mixedState << 12 | mixedState >>> 20;
+    s0 = s0 + s1;
     mixedState = s3 ^ s0;
-    s3 = (mixedState << 8 | mixedState >>> 24) >>> 0;
-    s2 = s2 + s3 >>> 0;
+    s3 = mixedState << 8 | mixedState >>> 24;
+    s2 = s2 + s3;
     mixedState = s1 ^ s2;
-    s1 = (mixedState << 7 | mixedState >>> 25) >>> 0;
+    s1 = mixedState << 7 | mixedState >>> 25;
   }
   for (let index = 0; index < 512; index += 1) {
-    s0 = s0 + s1 >>> 0;
-    mixedState = s3 ^ s0;
-    s3 = (mixedState << 16 | mixedState >>> 16) >>> 0;
-    s2 = s2 + s3 >>> 0;
+    s0 = s0 + s1;
+    let mixedState = s3 ^ s0;
+    s3 = mixedState << 16 | mixedState >>> 16;
+    s2 = s2 + s3;
     mixedState = s1 ^ s2;
-    s1 = (mixedState << 12 | mixedState >>> 20) >>> 0;
-    s0 = s0 + s1 >>> 0;
+    s1 = mixedState << 12 | mixedState >>> 20;
+    s0 = s0 + s1;
     mixedState = s3 ^ s0;
-    s3 = (mixedState << 8 | mixedState >>> 24) >>> 0;
-    s2 = s2 + s3 >>> 0;
+    s3 = mixedState << 8 | mixedState >>> 24;
+    s2 = s2 + s3;
     mixedState = s1 ^ s2;
-    s1 = (mixedState << 7 | mixedState >>> 25) >>> 0;
-    table[index] = (s0 ^ s2) >>> 0;
+    s1 = mixedState << 7 | mixedState >>> 25;
+    table[index] = s0 ^ s2;
   }
+  const A_H = 40503;
+  const A_L = 31153;
   for (let round = 0; round < 2; round += 1) {
     for (let index = 0; index < 512; index += 1) {
-      const target = table[index] & 511;
-      let mixed = table[index] + table[target] >>> 0;
-      mixed = (mixed << 13 | mixed >>> 19) >>> 0;
-      mixed = (mixed ^ Math.imul(table[index + 1 & 511], 2654435761)) >>> 0;
+      const current = table[index];
+      const target = current & 511;
+      const next = index + 1;
+      const tail = table[next & 511];
+      const rotated = current + table[target];
+      let mixed = (rotated << 13 | rotated >>> 19) ^ ((tail * A_H & 65535) << 16) + tail * A_L;
       table[index] = mixed;
-      s0 = (s0 ^ mixed) >>> 0;
-      s0 = s0 + s1 >>> 0;
-      mixedState = s3 ^ s0;
-      s3 = (mixedState << 16 | mixedState >>> 16) >>> 0;
-      s2 = s2 + s3 >>> 0;
+      s0 = s0 ^ mixed;
+      s0 = s0 + s1;
+      let mixedState = s3 ^ s0;
+      s3 = mixedState << 16 | mixedState >>> 16;
+      s2 = s2 + s3;
       mixedState = s1 ^ s2;
-      s1 = (mixedState << 12 | mixedState >>> 20) >>> 0;
-      s0 = s0 + s1 >>> 0;
+      s1 = mixedState << 12 | mixedState >>> 20;
+      s0 = s0 + s1;
       mixedState = s3 ^ s0;
-      s3 = (mixedState << 8 | mixedState >>> 24) >>> 0;
-      s2 = s2 + s3 >>> 0;
+      s3 = mixedState << 8 | mixedState >>> 24;
+      s2 = s2 + s3;
       mixedState = s1 ^ s2;
-      s1 = (mixedState << 7 | mixedState >>> 25) >>> 0;
+      s1 = mixedState << 7 | mixedState >>> 25;
     }
   }
+  const B_H = 34283;
+  const B_L = 51831;
   const out = POW_OUT;
-  for (let block = 0; block < 8; block += 1) {
-    s0 = s0 + s1 >>> 0;
-    mixedState = s3 ^ s0;
-    s3 = (mixedState << 16 | mixedState >>> 16) >>> 0;
-    s2 = s2 + s3 >>> 0;
+  for (let block = 0; block < outWords; block += 1) {
+    s0 = s0 + s1;
+    let mixedState = s3 ^ s0;
+    s3 = mixedState << 16 | mixedState >>> 16;
+    s2 = s2 + s3;
     mixedState = s1 ^ s2;
-    s1 = (mixedState << 12 | mixedState >>> 20) >>> 0;
-    s0 = s0 + s1 >>> 0;
+    s1 = mixedState << 12 | mixedState >>> 20;
+    s0 = s0 + s1;
     mixedState = s3 ^ s0;
-    s3 = (mixedState << 8 | mixedState >>> 24) >>> 0;
-    s2 = s2 + s3 >>> 0;
+    s3 = mixedState << 8 | mixedState >>> 24;
+    s2 = s2 + s3;
     mixedState = s1 ^ s2;
-    s1 = (mixedState << 7 | mixedState >>> 25) >>> 0;
+    s1 = mixedState << 7 | mixedState >>> 25;
     let accumulator = s0;
     const base = block * 64;
     for (let position = 0; position < 64; position += 1) {
       const value = table[base + position];
-      accumulator = accumulator + value >>> 0;
-      accumulator = (accumulator << 5 | accumulator >>> 27) >>> 0;
-      accumulator = (accumulator ^ Math.imul(value, 2246822519)) >>> 0;
+      accumulator = accumulator + value;
+      accumulator = accumulator << 5 | accumulator >>> 27;
+      accumulator = accumulator ^ ((value * B_H & 65535) << 16) + value * B_L;
     }
-    out[block] = (accumulator ^ s2) >>> 0;
+    out[block] = accumulator ^ s2;
   }
-  return out;
 }
 function leadingZeroBits(words) {
   let bits = 0;
@@ -683,6 +699,16 @@ function solvePow(nonce, difficulty, timeoutMs = 2e4) {
   const prefix = `${nonce}:`;
   const prefixLength = Math.min(prefix.length, POW_INPUT.length - 12);
   for (let index = 0; index < prefixLength; index += 1) POW_INPUT[index] = prefix.charCodeAt(index) & 255;
+  POW_SEED[0] = 1779033703;
+  POW_SEED[1] = 3144134277;
+  POW_SEED[2] = 1013904242;
+  POW_SEED[3] = 2773480762;
+  powAbsorb(0, prefixLength);
+  const baseSeed0 = POW_SEED[0];
+  const baseSeed1 = POW_SEED[1];
+  const baseSeed2 = POW_SEED[2];
+  const baseSeed3 = POW_SEED[3];
+  const threshold = level === 32 ? 0 : 4294967296 / Math.pow(2, level) >>> 0;
   const startedAt = Date.now();
   let counter = 0;
   for (; ; ) {
@@ -699,15 +725,34 @@ function solvePow(nonce, difficulty, timeoutMs = 2e4) {
         POW_INPUT[position] = POW_DIGITS[index];
         position += 1;
       }
-      const words = powHashBytes(position);
+      POW_SEED[0] = baseSeed0;
+      POW_SEED[1] = baseSeed1;
+      POW_SEED[2] = baseSeed2;
+      POW_SEED[3] = baseSeed3;
+      powAbsorb(prefixLength, position);
       let matched = false;
       if (level <= 32) {
-        const threshold = level === 32 ? 0 : 4294967296 / Math.pow(2, level) >>> 0;
-        matched = words[0] < threshold && leadingZeroBits(words) >= level;
+        powFinish(1);
+        matched = POW_OUT[0] < threshold;
       } else {
-        matched = words[0] === 0 && leadingZeroBits(words) >= level;
+        powFinish(8);
+        matched = POW_OUT[0] === 0 && leadingZeroBits(POW_OUT) >= level;
       }
-      if (matched) return String(counter);
+      if (matched) {
+        if (level <= 32) {
+          POW_SEED[0] = baseSeed0;
+          POW_SEED[1] = baseSeed1;
+          POW_SEED[2] = baseSeed2;
+          POW_SEED[3] = baseSeed3;
+          powAbsorb(prefixLength, position);
+          powFinish(8);
+          if (!(POW_OUT[0] < threshold && leadingZeroBits(POW_OUT) >= level)) {
+            counter += 1;
+            continue;
+          }
+        }
+        return String(counter);
+      }
       counter += 1;
     }
     if (Date.now() - startedAt > timeoutMs) return null;

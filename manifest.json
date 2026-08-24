@@ -199,6 +199,66 @@
         "hls",
         "mp4"
       ]
+    },
+    {
+      "id": "filmehd",
+      "name": "FilmeHD",
+      "description": "Filme și seriale subtitrate în limba română de pe FilmeHD",
+      "version": "1.0.0",
+      "filename": "providers/filmehd.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://filmehd.to/wp-content/uploads/2020/01/favicon.ico",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "vezihd",
+      "name": "VeziHD",
+      "description": "Filme subtitrate în limba română de pe VeziHD",
+      "version": "1.0.0",
+      "filename": "providers/vezihd.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://vezihd.ro/favicon.ico",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "xfilme",
+      "name": "XFilme",
+      "description": "Filme și seriale subtitrate în limba română de pe XFilme",
+      "version": "1.0.0",
+      "filename": "providers/xfilme.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://xfilme.ro/wp-content/uploads/2025/08/cropped-xf-192x192.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
     }
   ]
 }
