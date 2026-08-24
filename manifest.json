@@ -1,0 +1,204 @@
+{
+  "name": "Nuvio Romanian Providers",
+  "version": "1.2.0",
+  "description": "Romanian-language stream providers for Nuvio",
+  "scrapers": [
+    {
+      "id": "deseneledublate",
+      "name": "DeseneleDublate",
+      "description": "Desene animate dublate în limba română de pe DeseneleDublate",
+      "version": "1.0.0",
+      "filename": "providers/deseneledublate.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://deseneledublate.com/wp-content/uploads/2020/04/favicons.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "desenflix",
+      "name": "DesenFlix",
+      "description": "Desene animate dublate în limba română de pe DesenFlix",
+      "version": "1.0.0",
+      "filename": "providers/desenflix.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://desenflix.online/wp-content/uploads/2026/08/desenflix_logo_black_bg-300x300.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "luminsangels",
+      "name": "LuminsAngels",
+      "description": "Seriale și filme asiatice subtitrate în limba română de pe LuminsAngels",
+      "version": "1.0.0",
+      "filename": "providers/luminsangels.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://luminsangelsseriale.ro/wp-content/uploads/2023/07/apple-icon-152x152-1-1.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "sitefilme",
+      "name": "SiteFilme",
+      "description": "Filme și seriale subtitrate în limba română de pe SiteFilme",
+      "version": "1.0.1",
+      "filename": "providers/sitefilme.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://sitefilme.com/favicon-96x96.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls"
+      ]
+    },
+    {
+      "id": "clicksud",
+      "name": "ClickSud",
+      "description": "Emisiuni și seriale TV în limba română de pe ClickSud",
+      "version": "1.0.8",
+      "filename": "providers/clicksud.js",
+      "supportedTypes": [
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://click-sud.pro/wp-content/uploads/2026/08/clicksud.webp",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "desenefaine",
+      "name": "DeseneFaine",
+      "description": "Filme și seriale dublate sau subtitrate în limba română de pe DeseneFaine",
+      "version": "1.0.0",
+      "filename": "providers/desenefaine.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://desenefaine.com/wp-content/uploads/cropped-ico2-192x192.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "voxfilmeonline",
+      "name": "VoxFilmeOnline",
+      "description": "Filme subtitrate în limba română de pe VoxFilmeOnline",
+      "version": "1.0.0",
+      "filename": "providers/voxfilmeonline.js",
+      "supportedTypes": [
+        "movie"
+      ],
+      "enabled": true,
+      "logo": "https://voxfilmeonline.biz/wp-content/uploads/2021/07/cropped-favicon-192x192.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "fsonline",
+      "name": "FSonline",
+      "description": "Filme și seriale subtitrate în limba română de pe FSonline",
+      "version": "1.0.0",
+      "filename": "providers/fsonline.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://www3.fsonline.app/wp-content/uploads/2020/02/fsonline-logo.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "dozaanimata",
+      "name": "DozaAnimata",
+      "description": "Desene animate și anime dublate sau subtitrate în limba română de pe DozaAnimata",
+      "version": "1.0.0",
+      "filename": "providers/dozaanimata.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://www.dozaanimata.net/wp-content/uploads/2023/07/apple-icon-152x152-1-1.png",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    },
+    {
+      "id": "serialeonline",
+      "name": "SerialeOnline",
+      "description": "Seriale și filme subtitrate în limba română de pe SerialeOnline",
+      "version": "1.0.0",
+      "filename": "providers/serialeonline.js",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "enabled": true,
+      "logo": "https://serialeonline.app/favicon.ico",
+      "contentLanguage": [
+        "ro"
+      ],
+      "formats": [
+        "hls",
+        "mp4"
+      ]
+    }
+  ]
+}
