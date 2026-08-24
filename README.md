@@ -46,5 +46,3 @@ https://raw.githubusercontent.com/A2R14N/nuvio-providers/ro-main/manifest.json
 ## Version
 
 Current release: **1.2.0** (13 providers)
-
-Development happens on the private [`ro-dev`](https://github.com/A2R14N/nuvio-providers-dev/tree/ro-dev) branch of [`A2R14N/nuvio-providers-dev`](https://github.com/A2R14N/nuvio-providers-dev).
